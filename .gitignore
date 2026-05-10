@@ -1,8 +1,36 @@
-node_modules/
-build/
-dist/
-coverage/
-.DS_Store
+# Logs
+logs
 *.log
-.env*
-!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+dist
+dist-ssr
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build output
+build/
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Vercel
+.vercel
+
+# Cache
+.turbo
+.eslintcache
