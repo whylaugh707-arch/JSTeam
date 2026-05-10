@@ -67,6 +67,18 @@ const dorkCategories: DorkCategory[] = [
       { label: 'API Keys', query: (t) => `site:${t} intext:"API_KEY" OR intext:"SECRET_KEY"` },
       { label: 'SSH Private Keys', query: (t) => `site:${t} "-----BEGIN RSA PRIVATE KEY-----"` },
     ]
+  },
+  {
+    id: 'individual',
+    name: 'Individual OSINT',
+    icon: Search,
+    queries: [
+      { label: 'Social Media Profiles', query: (t) => `"${t}" site:linkedin.com OR site:facebook.com OR site:instagram.com OR site:twitter.com` },
+      { label: 'Public Mentions', query: (t) => `"${t}" -site:linkedin.com -site:facebook.com` },
+      { label: 'Resume / CV', query: (t) => `"${t}" filetype:pdf OR filetype:doc OR filetype:docx "resume" OR "cv" OR "curriculum vitae"` },
+      { label: 'Email Patterns', query: (t) => `"${t}" "@gmail.com" OR "@yahoo.com" OR "@outlook.com"` },
+      { label: 'Directory Search', query: (t) => `intitle:"index of" "${t}"` },
+    ]
   }
 ];
 
@@ -97,13 +109,13 @@ const GoogleDorker: React.FC = () => {
             type="text"
             value={target}
             onChange={(e) => setTarget(e.target.value)}
-            placeholder="DOMAIN_ATAU_KATA_KUNCI_TARGET (e.g., target.com)..."
+            placeholder="DOMAIN_ATAU_NAMA_TARGET (e.g., target.com atau Nama Seseorang)..."
             className="tactical-input !pr-12"
           />
           <TerminalIcon className="absolute right-4 top-1/2 -translate-y-1/2 size-5 text-cyber-red/30 group-focus-within:text-cyber-red transition-colors" />
         </div>
         <p className="mt-3 font-mono text-[9px] text-gray-600 uppercase tracking-widest text-center">
-          MASUKKAN_DOMAIN_UNTUK_GENERASI_OTOMATIS_QUERY_DORKING
+          MASUKKAN_TARGET_UNTUK_GENERASI_OTOMATIS_QUERY_DORKING
         </p>
       </div>
 
@@ -161,17 +173,6 @@ const GoogleDorker: React.FC = () => {
         ))}
       </div>
 
-      <div className="bg-cyber-red/5 border border-cyber-red/20 p-6 rounded-sm">
-        <div className="flex gap-4 items-start">
-          <ShieldAlert className="size-6 text-cyber-red shrink-0 mt-1" />
-          <div className="space-y-2">
-            <h4 className="font-sans font-bold text-white uppercase tracking-widest text-xs">Peringatan_Protokol</h4>
-            <p className="font-mono text-[10px] text-gray-500 leading-relaxed uppercase">
-              DORKING_DAPAT_DIANGGAP_SEBAGAI_AKTIVITAS_INTELIJEN_PASIF. PASTIKAN_ANDA_MEMILIKI_OTORISASI_SEBELUM_MENGEKSPLORASI_HASIL_DARI_TARGET_YANG_TIDAK_DIMILIKI_PRIBADI.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
