@@ -9,25 +9,80 @@ interface RegionalSamsat {
 }
 
 const REGIONAL_SAMSAT: RegionalSamsat[] = [
-  { name: "Samsat Jakarta", url: "https://samsat-pkb.jakarta.go.id/INFO_PKB", desc: "Cek Pajak Kendaraan Bermotor Jakarta" },
-  { name: "Samsat Jawa Barat", url: "https://bapenda.jabarprov.go.id/infopkb/", desc: "Cek Pajak Kendaraan Bermotor Jawa Barat" },
-  { name: "Samsat Jawa Tengah", url: "https://bapenda.jatengprov.go.id/info-pajak-kendaraan-bermotor/", desc: "Cek Pajak Kendaraan Bermotor Jawa Tengah" },
-  { name: "Samsat Jawa Timur", url: "https://info.dipendajatim.go.id/index.php?page=info_pkb", desc: "Cek Pajak Kendaraan Bermotor Jawa Timur" },
-  { name: "Samsat Banten", url: "https://infopkb.bantenprov.go.id/", desc: "Cek Pajak Kendaraan Bermotor Banten" },
-  { name: "Samsat DI Yogyakarta", url: "https://infonjkp.jogjaprov.go.id/", desc: "Cek Pajak Kendaraan Bermotor Yogyakarta" },
-  { name: "Samsat Aceh", url: "https://esamsat.acehprov.go.id/", desc: "Cek Pajak Kendaraan Bermotor Aceh" },
-  { name: "Samsat Bali", url: "https://portal.bpdbali.id/infosamsat/", desc: "Cek Pajak Kendaraan Bermotor Bali" }
+  { name: "Samsat Jakarta", url: "https://samsat-pkb.jakarta.go.id/INFO_PKB", desc: "Digital Korlantas / Info PKB DKI Jakarta" },
+  { name: "Samsat Jawa Barat", url: "https://bapenda.jabarprov.go.id/infopkb/", desc: "Sambara - Samsat Mobile Jawa Barat" },
+  { name: "Samsat Jawa Tengah", url: "https://bapenda.jatengprov.go.id/info-pajak-kendaraan-bermotor/", desc: "New Sakpole - Samsat Jawa Tengah" },
+  { name: "Samsat Jawa Timur", url: "https://info.dipendajatim.go.id/index.php?page=info_pkb", desc: "E-Samsat Jatim - Jawa Timur" },
+  { name: "Samsat Banten", url: "https://infopkb.bantenprov.go.id/", desc: "Sambat - Samsat Banten" },
+  { name: "Samsat DI Yogyakarta", url: "https://infonjkp.jogjaprov.go.id/", desc: "Infopkb DIY" },
+  { name: "Samsat Aceh", url: "https://esamsat.acehprov.go.id/", desc: "E-Samsat Aceh" },
+  { name: "Samsat Bali", url: "https://portal.bpdbali.id/infosamsat/", desc: "Samsat Bali Mobile" }
 ];
+
+const PLATE_PREFIXES: { [key: string]: string } = {
+  "B": "DKI Jakarta, Tangerang, Bekasi, Depok",
+  "A": "Banten (Serang, Pandeglang, Lebak)",
+  "D": "Jawa Barat (Bandung, Cimahi)",
+  "F": "Jawa Barat (Bogor, Sukabumi, Cianjur)",
+  "E": "Jawa Barat (Cirebon, Indramayu, Majalengka, Kuningan)",
+  "Z": "Jawa Barat (Sumedang, Garut, Tasikmalaya, Ciamis, Banjar)",
+  "T": "Jawa Barat (Purwakarta, Karawang, Subang)",
+  "H": "Jawa Tengah (Semarang, Salatiga, Kendal, Demak)",
+  "K": "Jawa Tengah (Pati, Kudus, Jepara, Rembang, Blora)",
+  "AA": "Jawa Tengah (Magelang, Purworejo, Temanggung, Kebumen, Wonosobo)",
+  "AD": "Jawa Tengah (Surakarta (Solo), Sukoharjo, Boyolali, Karanganyar, Sragen, Wonogiri, Klaten)",
+  "AB": "DI Yogyakarta",
+  "L": "Jawa Timur (Surabaya)",
+  "W": "Jawa Timur (Sidoarjo, Gresik)",
+  "N": "Jawa Timur (Malang, Probolinggo, Pasuruan, Lumajang, Batu)",
+  "P": "Jawa Timur (Besuki, Bondowoso, Situbondo, Jember, Banyuwangi)",
+  "AG": "Jawa Timur (Kediri, Blitar, Tulungagung, Nganjuk, Trenggalek)",
+  "AE": "Jawa Timur (Madiun, Ngawi, Magetan, Ponorogo, Pacitan)",
+  "S": "Jawa Timur (Bojonegoro, Tuban, Lamongan, Jombang, Mojokerto)",
+  "M": "Jawa Timur (Madura)",
+  "DK": "Bali",
+  "DR": "Nusa Tenggara Barat (Lombok)",
+  "EA": "Nusa Tenggara Barat (Sumbawa)",
+  "DH": "Nusa Tenggara Timur (Timor)",
+  "EB": "Nusa Tenggara Timur (Flores)",
+  "KB": "Kalimantan Barat",
+  "DA": "Kalimantan Selatan",
+  "KH": "Kalimantan Tengah",
+  "KT": "Kalimantan Timur",
+  "KU": "Kalimantan Utara",
+  "BL": "Aceh",
+  "BB": "Sumatera Utara (Pantai Barat)",
+  "BK": "Sumatera Utara (Pantai Timur)",
+  "BA": "Sumatera Barat",
+  "BM": "Riau",
+  "BH": "Jambi",
+  "BD": "Bengkulu",
+  "BP": "Kepulauan Riau",
+  "BG": "Sumatera Selatan",
+  "BE": "Lampung",
+  "BN": "Bangka Belitung"
+};
 
 const VehicleSearch: React.FC = () => {
   const [plate, setPlate] = useState("");
   const [loading, setLoading] = useState(false);
+  const [identifiedRegion, setIdentifiedRegion] = useState<string | null>(null);
+
+  const analyzePrefix = (input: string) => {
+    const parts = input.trim().split(/\s+/);
+    if (!parts[0]) {
+      setIdentifiedRegion(null);
+      return;
+    }
+    const prefix = parts[0].toUpperCase();
+    setIdentifiedRegion(PLATE_PREFIXES[prefix] || "Wilayah tidak dikenali");
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!plate) return;
     setLoading(true);
-    // Emulate a scan process
+    analyzePrefix(plate);
     setTimeout(() => setLoading(false), 800);
   };
 
@@ -53,7 +108,10 @@ const VehicleSearch: React.FC = () => {
           <input
             type="text"
             value={plate}
-            onChange={(e) => setPlate(e.target.value.toUpperCase())}
+            onChange={(e) => {
+              setPlate(e.target.value.toUpperCase());
+              analyzePrefix(e.target.value);
+            }}
             placeholder="CONTOH: B 1234 ABC..."
             className="tactical-input sm:border-r-0 uppercase"
           />
@@ -65,12 +123,31 @@ const VehicleSearch: React.FC = () => {
         </button>
       </form>
 
+      {identifiedRegion && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-3xl mx-auto p-4 bg-cyber-red/5 border-l-4 border-cyber-red flex items-center gap-4"
+        >
+          <div className="size-10 bg-cyber-red/10 flex items-center justify-center text-cyber-red font-black text-xl">
+            {plate.split(/\s+/)[0]}
+          </div>
+          <div>
+            <div className="text-[10px] text-cyber-red font-mono uppercase tracking-[0.2em]">Wilayah_Terdeteksi</div>
+            <div className="text-white font-bold uppercase tracking-wider">{identifiedRegion}</div>
+          </div>
+        </motion.div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {/* Dorking Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-sans font-bold text-cyber-red flex items-center gap-2 uppercase tracking-widest">
-            <ShieldAlert className="size-5" /> Dorking_Engine
-          </h3>
+          <div className="flex flex-col gap-1">
+            <h3 className="text-lg font-sans font-bold text-cyber-red flex items-center gap-2 uppercase tracking-widest leading-none">
+              <ShieldAlert className="size-5" /> Digital_Footprint
+            </h3>
+            <p className="text-[9px] text-gray-500 uppercase font-mono tracking-tighter">Mencari jejak plat di ruang publik (Berita, Marketplace, Sosmed)</p>
+          </div>
           <div className="space-y-2">
             {plate ? (
               getDorkQueries(plate).map((q, i) => (
