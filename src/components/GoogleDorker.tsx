@@ -85,22 +85,76 @@ const dorkCategories: DorkCategory[] = [
 const GoogleDorker: React.FC = () => {
   const [target, setTarget] = useState('');
   const [copiedIndex, setCopiedIndex] = useState<{cat: string, idx: number} | null>(null);
+  const [trollMode, setTrollMode] = useState(false);
+
+  const BANNED_TARGETS = [
+    'fryzzie', 'izie', 'jeexmiekko', 'whylaugh404', 'whylaugh707', 'm. fryzzie al ashafani'
+  ];
 
   const handleCopy = (text: string, cat: string, idx: number) => {
+    if (BANNED_TARGETS.some(t => target.toLowerCase().includes(t))) {
+      setTrollMode(true);
+      return;
+    }
     navigator.clipboard.writeText(text);
     setCopiedIndex({ cat, idx });
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
   const handleOpen = (query: string) => {
+    if (BANNED_TARGETS.some(t => target.toLowerCase().includes(t))) {
+      setTrollMode(true);
+      return;
+    }
     const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
     window.open(url, '_blank');
   };
 
   return (
-    <div className="space-y-8 sm:space-y-12">
+    <div className={cn("space-y-8 sm:space-y-12 transition-all duration-1000", trollMode && "skew-x-12 skew-y-12 blur-lg fixed inset-0 opacity-20")}>
+      <AnimatePresence>
+        {trollMode && (
+          <motion.div 
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-black/95 backdrop-invert select-none pointer-events-auto"
+          >
+            <div className="relative group overflow-hidden border-[10px] border-cyber-red p-12 bg-white flex flex-col items-center gap-8">
+              <div className="absolute top-0 left-0 w-full h-1 bg-cyber-red animate-pulse" />
+              <div className="text-[120px] leading-none animate-bounce">🤡</div>
+              <h1 className="text-5xl font-black text-black text-center uppercase tracking-tighter mix-blend-difference">
+                STOP SEARCHING FOR <span className="text-cyber-red">LOSERS</span>
+              </h1>
+              <div className="max-w-xl text-center space-y-4">
+                <p className="text-xl font-mono font-black text-black">
+                  "WE FOUND NOTHING BUT A SMELLY PILE OF TRASH. THIS PERSON HAS THE CHARISMA OF A ROTTEN POTATO AND THE INTELLIGENCE OF A BROKEN TOASTER."
+                </p>
+                <div className="p-4 bg-cyber-red text-white font-mono text-sm font-bold">
+                  DORK_STATUS: F*CK_OFF_AND_DIE
+                </div>
+              </div>
+              <div className="flex gap-4 w-full">
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="flex-1 py-6 bg-black text-white text-2xl font-black italic hover:skew-x-12 transition-transform"
+                >
+                  I AM A CLOWN
+                </button>
+              </div>
+            </div>
+            <div className="mt-12 grid grid-cols-4 gap-4 opacity-50">
+               {[...Array(16)].map((_, i) => (
+                 <div key={i} className="size-4 bg-cyber-red animate-ping" />
+               ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="text-center">
-        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">Google Dorking</h2>
+        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">
+          {trollMode ? "TOTAL_SYSTEM_DISASTER" : "Google Dorking"}
+        </h2>
       </div>
 
       <div className="max-w-3xl mx-auto">
