@@ -21,8 +21,8 @@ export default function UsernameSearch() {
     try {
       const data = await scanUsername(username);
       setResults(data);
-    } catch (err) {
-      setError("COMMUNICATION_LINK_FAILURE: ATTEMPTING_RECONNECT");
+    } catch (err: any) {
+      setError(err.response?.data?.error || "COMMUNICATION_LINK_FAILURE: ATTEMPTING_RECONNECT");
     } finally {
       setLoading(false);
     }

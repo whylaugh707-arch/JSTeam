@@ -21,12 +21,27 @@ export default function NetworkTools() {
     setWhoisResults(null);
 
     try {
-      const [dnsData, whoisData] = await Promise.all([
+      // Split calls to avoid one failure blocking the other
+      const [dnsData, whoisData] = await Promise.allSettled([
         getDNSRecords(domain),
         getWhoisInfo(domain)
       ]);
-      setDnsResults(dnsData);
-      setWhoisResults(whoisData);
+
+      if (dnsData.status === 'fulfilled') {
+        setDnsResults(dnsData.value);
+      } else {
+        console.error("DNS Error:", dnsData.reason);
+      }
+
+      if (whoisData.status === 'fulfilled') {
+        setWhoisResults(whoisData.value);
+      } else {
+        console.error("Whois Error:", whoisData.reason);
+      }
+
+      if (dnsData.status === 'rejected' && whoisData.status === 'rejected') {
+        setError("CORE_INFRA_UNREACHABLE: PROBE_TIMEOUT_OR_DNS_SEC_VIOLATION");
+      }
     } catch (err) {
       setError("CORE_INFRA_UNREACHABLE: PROBE_TIMEOUT_OR_DNS_SEC_VIOLATION");
     } finally {

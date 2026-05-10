@@ -36,55 +36,38 @@ async function startServer() {
       { name: "Twitch", url: `https://www.twitch.tv/${username}` },
       { name: "SoundCloud", url: `https://soundcloud.com/${username}` },
       { name: "Medium", url: `https://medium.com/@${username}` },
-      { name: "Tumblr", url: `https://${username}.tumblr.com/` },
-      { name: "Behance", url: `https://www.behance.net/${username}` },
-      { name: "Dribbble", url: `https://dribbble.com/${username}` },
       { name: "Steam", url: `https://steamcommunity.com/id/${username}` },
-      { name: "Wattpad", url: `https://www.wattpad.com/user/${username}` },
       { name: "DeviantArt", url: `https://www.deviantart.com/${username}` },
-      { name: "Kaskus", url: `https://www.kaskus.co.id/@${username}` },
       { name: "Linktree", url: `https://linktr.ee/${username}` },
-      { name: "Roblox", url: `https://www.roblox.com/user.aspx?username=${username}` },
-      { name: "Chess.com", url: `https://www.chess.com/member/${username}` },
-      { name: "GitLab", url: `https://gitlab.com/${username}` },
-      { name: "Spotify", url: `https://open.spotify.com/user/${username}` },
-      { name: "Vimeo", url: `https://vimeo.com/${username}` },
-      { name: "Patreon", url: `https://www.patreon.com/${username}` },
-      { name: "Flickr", url: `https://www.flickr.com/people/${username}/` },
-      { name: "Snapchat", url: `https://www.snapchat.com/add/${username}` },
       { name: "Telegram", url: `https://t.me/${username}` },
       { name: "Bitbucket", url: `https://bitbucket.org/${username}/` },
-      { name: "Quora", url: `https://www.quora.com/profile/${username}` },
-      { name: "About.me", url: `https://about.me/${username}` },
-      { name: "Carrd", url: `https://${username}.carrd.co/` },
-      { name: "Buy Me A Coffee", url: `https://www.buymeacoffee.com/${username}` },
-      { name: "Ko-fi", url: `https://ko-fi.com/${username}` },
-      { name: "Kompasiana", url: `https://www.kompasiana.com/${username}` },
-      { name: "Tokopedia", url: `https://www.tokopedia.com/people/${username}` },
-      { name: "Bukalapak", url: `https://www.bukalapak.com/u/${username}` },
-      { name: "Blogger", url: `https://${username}.blogspot.com/` },
       { name: "WordPress", url: `https://${username}.wordpress.com/` },
     ];
 
     const scan = async (site: any) => {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000); // 4s timeout per site
+
         const response = await axios.get(site.url, { 
-          timeout: 8000,
+          signal: controller.signal,
           headers: { 
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
           },
-          maxRedirects: 5,
+          maxRedirects: 3,
           validateStatus: (status) => status < 500
         });
+        clearTimeout(timeoutId);
 
         const content = String(response.data).toLowerCase();
         let exists = response.status === 200;
 
         // More robust checks for sites that use anti-bot or custom error pages
         if (site.name === "Instagram" && (content.includes("login") || content.includes("checkpoint"))) exists = false;
-        if (site.name === "TikTok" && content.includes("not found")) exists = false;
+        if (site.name === "TikTok" && (content.includes("not found") || content.includes("couldn't find"))) exists = false;
         if (site.name === "Twitter/X" && (content.includes("doesn’t exist") || content.includes("login"))) exists = false;
         if (site.name === "Facebook" && (content.includes("not found") || content.includes("login"))) exists = false;
+        if (site.name === "GitHub" && (content.includes("not found") || response.status === 404)) exists = false;
 
         return { name: site.name, url: site.url, exists };
       } catch (error) {
@@ -92,7 +75,7 @@ async function startServer() {
       }
     };
 
-    // Parallel scan
+    // Parallel scan with limited sites to avoid timeout on Vercel
     const results = await Promise.all(sites.map(scan));
     res.json(results);
   });
@@ -101,29 +84,45 @@ async function startServer() {
   app.get("/api/osint/ip/:ip", async (req, res) => {
     const { ip } = req.params;
     try {
-      // Trying ip-api.com as it's often more reliable for free tier
-      const response = await axios.get(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query`, { timeout: 5000 });
+      // Using ipapi.co (fallback to http if https fails)
+      const response = await axios.get(`https://ipapi.co/${ip}/json/`, { timeout: 5000 });
       
-      if (response.data.status === "fail") {
-        throw new Error(response.data.message || "IP resolution failed");
+      if (response.data.error) {
+        throw new Error(response.data.reason || "IP resolution failed");
       }
 
-      // Map to our IPInfo interface
       const data = {
-        ip: response.data.query,
+        ip: response.data.ip,
         city: response.data.city,
-        region: response.data.regionName,
-        country_name: response.data.country,
-        latitude: response.data.lat,
-        longitude: response.data.lon,
-        org: response.data.isp || response.data.org,
+        region: response.data.region,
+        country_name: response.data.country_name,
+        latitude: response.data.latitude,
+        longitude: response.data.longitude,
+        org: response.data.org,
         timezone: response.data.timezone,
-        postal: response.data.zip
+        postal: response.data.postal
       };
       res.json(data);
     } catch (error: any) {
-      console.error("IP Error:", error.message);
-      res.status(500).json({ error: "NODE_CONN_TIMEOUT" });
+      // Final attempt with ip-api.com (http only)
+      try {
+        const response = await axios.get(`http://ip-api.com/json/${ip}`, { timeout: 3000 });
+        const data = {
+          ip: response.data.query,
+          city: response.data.city,
+          region: response.data.regionName,
+          country_name: response.data.country,
+          latitude: response.data.lat,
+          longitude: response.data.lon,
+          org: response.data.isp || response.data.org,
+          timezone: response.data.timezone,
+          postal: response.data.zip
+        };
+        return res.json(data);
+      } catch (e) {
+        console.error("IP Error:", error.message);
+        res.status(500).json({ error: "NODE_CONN_TIMEOUT" });
+      }
     }
   });
 
@@ -169,20 +168,26 @@ async function startServer() {
   app.get("/api/osint/whois/:domain", async (req, res) => {
     const { domain } = req.params;
     try {
-      // WHOIS is tricky in cloud, so we use a more reliable public proxy
-      const response = await axios.get(`https://whoisjs.com/api/v1/whois?domain=${domain}`, {
-        headers: { 'Accept': 'application/json' },
-        timeout: 10000
-      });
-      res.json(response.data);
-    } catch (error) {
-      // Fallback to RDAP if whoisjs fails
-      try {
-        const response = await axios.get(`https://rdap.org/domain/${domain}`, { timeout: 5000 });
-        res.json(response.data);
-      } catch (e) {
-        res.status(500).json({ error: "REGISTRY_TIMEOUT_OR_BLOCKED" });
+      // Try multiple providers
+      const providers = [
+        `https://rdap.org/domain/${domain}`,
+        `https://whoisjs.com/api/v1/whois?domain=${domain}`
+      ];
+
+      for (const url of providers) {
+        try {
+          const response = await axios.get(url, { timeout: 5000 });
+          if (response.data && Object.keys(response.data).length > 0) {
+            return res.json(response.data);
+          }
+        } catch (e) {
+          continue;
+        }
       }
+      
+      res.status(500).json({ error: "REGISTRY_TIMEOUT_OR_BLOCKED" });
+    } catch (error) {
+      res.status(500).json({ error: "REGISTRY_TIMEOUT_OR_BLOCKED" });
     }
   });
 
