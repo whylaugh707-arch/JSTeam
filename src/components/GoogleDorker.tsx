@@ -111,36 +111,34 @@ const GoogleDorker: React.FC = () => {
   };
 
   return (
-    <div className={cn("space-y-8 sm:space-y-12 transition-all duration-1000", trollMode && "skew-x-12 skew-y-12 blur-lg fixed inset-0 opacity-20")}>
+    <div className={cn("space-y-8 sm:space-y-12 transition-all duration-1000", trollMode && "blur-lg fixed inset-0 opacity-20 pointer-events-none overflow-hidden")}>
       <AnimatePresence>
         {trollMode && (
           <motion.div 
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-black/95 backdrop-invert select-none pointer-events-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-black/95 select-none pointer-events-auto"
           >
-            <div className="relative group overflow-hidden border-[10px] border-cyber-red p-12 bg-white flex flex-col items-center gap-8">
+            <div className="relative group overflow-hidden border-[6px] border-cyber-red p-8 sm:p-12 bg-white flex flex-col items-center gap-6 sm:gap-8 max-w-lg w-full">
               <div className="absolute top-0 left-0 w-full h-1 bg-cyber-red animate-pulse" />
-              <div className="text-[120px] leading-none animate-bounce">🤡</div>
-              <h1 className="text-5xl font-black text-black text-center uppercase tracking-tighter mix-blend-difference">
+              <div className="text-[80px] sm:text-[120px] leading-none animate-bounce">🤡</div>
+              <h1 className="text-3xl sm:text-5xl font-black text-black text-center uppercase tracking-tighter mix-blend-difference">
                 STOP SEARCHING FOR <span className="text-cyber-red">LOSERS</span>
               </h1>
-              <div className="max-w-xl text-center space-y-4">
-                <p className="text-xl font-mono font-black text-black">
+              <div className="text-center space-y-4">
+                <p className="text-sm sm:text-xl font-mono font-black text-black leading-tight">
                   "WE FOUND NOTHING BUT A SMELLY PILE OF TRASH. THIS PERSON HAS THE CHARISMA OF A ROTTEN POTATO AND THE INTELLIGENCE OF A BROKEN TOASTER."
                 </p>
-                <div className="p-4 bg-cyber-red text-white font-mono text-sm font-bold">
+                <div className="p-3 bg-cyber-red text-white font-mono text-[10px] font-bold">
                   DORK_STATUS: F*CK_OFF_AND_DIE
                 </div>
               </div>
-              <div className="flex gap-4 w-full">
-                <button 
-                  onClick={() => window.location.reload()}
-                  className="flex-1 py-6 bg-black text-white text-2xl font-black italic hover:skew-x-12 transition-transform"
-                >
-                  I AM A CLOWN
-                </button>
-              </div>
+              <button 
+                onClick={() => window.location.reload()}
+                className="w-full py-4 sm:py-6 bg-black text-white text-xl sm:text-2xl font-black italic hover:bg-neutral-800 transition-colors"
+              >
+                I AM A CLOWN
+              </button>
             </div>
             <div className="mt-12 grid grid-cols-4 gap-4 opacity-50">
                {[...Array(16)].map((_, i) => (

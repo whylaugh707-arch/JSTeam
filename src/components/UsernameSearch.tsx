@@ -3,6 +3,7 @@ import { scanUsername } from "../services/osintService";
 import { UsernameScanResult } from "../types";
 import { Search, Loader2, ExternalLink, ShieldCheck, ShieldAlert } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { cn } from "../lib/utils";
 
 export default function UsernameSearch() {
   const [username, setUsername] = useState("");
@@ -52,12 +53,12 @@ export default function UsernameSearch() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-3xl pointer-events-auto"
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md pointer-events-auto"
           >
             <div className="max-w-md w-full bg-cyber-red/10 border-2 border-cyber-red p-8 space-y-6 text-center shadow-[0_0_50px_rgba(239,68,68,0.5)]">
               <ShieldAlert className="size-20 text-cyber-red mx-auto animate-bounce" />
-              <h1 className="text-3xl font-sans font-black text-white italic tracking-tighter">WHO THE F*CK DO YOU THINK YOU ARE?</h1>
-              <div className="space-y-4 font-mono text-sm text-cyber-red uppercase leading-tight font-bold">
+              <h1 className="text-2xl sm:text-3xl font-sans font-black text-white italic tracking-tighter">WHO THE F*CK DO YOU THINK YOU ARE?</h1>
+              <div className="space-y-4 font-mono text-xs sm:text-sm text-cyber-red uppercase leading-tight font-bold">
                 <p>"Searching for this absolute failure? This person is a living joke, a digital stain that doesn't even deserve an OSINT trace."</p>
                 <p>DO NOT WASTE OUR INFRASTRUCTURE ON THIS GARBAGE. GET A LIFE, YOU PATHETIC LOW-LIFE SCRIPTER.</p>
                 <p className="text-[10px] text-white/50 opacity-30 mt-8">ERROR_CODE: EGO_TOO_SMALL_TO_BE_FOUND</p>
