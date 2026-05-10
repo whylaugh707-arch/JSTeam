@@ -30,17 +30,46 @@ const NikSearch: React.FC = () => {
   const [result, setResult] = useState<NikData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const analyzeNik = (input: string) => {
+  const fetchRegionNames = async (provCode: string, cityCodeStr: string, distCodeStr: string) => {
+    try {
+      const fullCityCode = provCode + cityCodeStr;
+      const fullDistCode = provCode + cityCodeStr + distCodeStr;
+
+      // Fetch Regencies for the Province
+      const regResponse = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provCode}.json`);
+      const regencies = await regResponse.json();
+      const city = regencies.find((r: any) => r.id === fullCityCode);
+
+      // Fetch Districts for the Regency
+      const distResponse = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${fullCityCode}.json`);
+      const districts = await distResponse.json();
+      const district = districts.find((d: any) => d.id === fullDistCode);
+
+      return {
+        cityName: city ? city.name : `KAB/KOTA [${cityCodeStr}]`,
+        distName: district ? district.name : `KECAMATAN [${distCodeStr}]`
+      };
+    } catch (e) {
+      console.error("Failed to fetch region names:", e);
+      return {
+        cityName: `KAB/KOTA [${cityCodeStr}]`,
+        distName: `KECAMATAN [${distCodeStr}]`
+      };
+    }
+  };
+
+  const analyzeNik = async (input: string) => {
     setError(null);
     if (input.length !== 16) {
       setError("NIK HARUS 16 DIGIT");
+      setLoading(false);
       return;
     }
 
     try {
       const provCode = input.substring(0, 2);
-      const cityCode = input.substring(2, 4);
-      const distCode = input.substring(4, 6);
+      const cityCodeStr = input.substring(2, 4);
+      const distCodeStr = input.substring(4, 6);
       let day = parseInt(input.substring(6, 8));
       const month = input.substring(8, 10);
       let year = parseInt(input.substring(10, 12));
@@ -54,10 +83,12 @@ const NikSearch: React.FC = () => {
       const birthDate = new Date(`${fullYear}-${month}-${day}`);
       const age = new Date().getFullYear() - fullYear;
 
+      const regionNames = await fetchRegionNames(provCode, cityCodeStr, distCodeStr);
+
       setResult({
         province: PROVINCES[provCode] || "TIDAK DIKENAL",
-        city: `KAB/KOTA KODE [${cityCode}]`,
-        district: `KECAMATAN KODE [${distCode}]`,
+        city: regionNames.cityName,
+        district: regionNames.distName,
         dob: birthDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
         gender,
         age,
@@ -65,6 +96,8 @@ const NikSearch: React.FC = () => {
       });
     } catch (e) {
       setError("FORMAT NIK TIDAK VALID");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,10 +105,7 @@ const NikSearch: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
-    setTimeout(() => {
-      analyzeNik(nik);
-      setLoading(false);
-    }, 1000);
+    analyzeNik(nik);
   };
 
   return (
