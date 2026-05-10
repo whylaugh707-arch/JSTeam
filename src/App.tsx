@@ -106,13 +106,13 @@ export default function App() {
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1 bg-black/50 border border-cyber-border p-1 relative overflow-hidden">
+          <nav className="hidden lg:flex items-center gap-1 bg-black/50 border border-cyber-border p-1 relative overflow-x-auto no-scrollbar max-w-[60%] xl:max-w-none">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as Tab)}
                 className={cn(
-                  "px-4 xl:px-6 py-2 text-[9px] xl:text-[10px] font-mono tracking-[0.1em] xl:tracking-[0.15em] uppercase transition-all flex items-center gap-2 xl:gap-3 relative z-10",
+                  "px-3 xl:px-6 py-2 text-[9px] xl:text-[10px] font-mono tracking-[0.1em] xl:tracking-[0.15em] uppercase transition-all flex items-center gap-2 xl:gap-3 relative z-10 shrink-0",
                   activeTab === tab.id 
                     ? "text-black font-bold" 
                     : "text-gray-500 hover:text-white"
@@ -150,11 +150,11 @@ export default function App() {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div
+          <motion.nav
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="lg:hidden fixed inset-0 top-20 bg-black z-30 p-6 space-y-6 flex flex-col"
+            className="lg:hidden fixed inset-0 top-20 bg-black z-30 p-6 space-y-4 flex flex-col overflow-y-auto"
           >
             {tabs.map((tab) => (
               <button
@@ -164,7 +164,7 @@ export default function App() {
                   setIsMenuOpen(false);
                 }}
                 className={cn(
-                  "w-full p-6 font-mono text-sm tracking-[0.2em] uppercase flex items-center gap-6 border transition-all",
+                  "w-full p-4 font-mono text-xs tracking-[0.15em] uppercase flex items-center gap-5 border transition-all shrink-0",
                   activeTab === tab.id 
                     ? "bg-cyber-red text-black border-cyber-red shadow-[0_0_20px_rgba(239,68,68,0.2)]" 
                     : "border-cyber-border text-gray-500"
@@ -177,7 +177,7 @@ export default function App() {
             <div className="mt-auto p-12 text-center opacity-10 blur-sm grayscale">
                  <Shield className="size-32 mx-auto text-cyber-red" />
             </div>
-          </motion.div>
+          </motion.nav>
         )}
       </AnimatePresence>
 

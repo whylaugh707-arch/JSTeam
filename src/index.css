@@ -85,4 +85,12 @@
   .status-tag {
     @apply px-3 py-1 font-mono text-[9px] uppercase tracking-widest rounded-full border border-current;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
