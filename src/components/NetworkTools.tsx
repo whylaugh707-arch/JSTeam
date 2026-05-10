@@ -51,20 +51,19 @@ export default function NetworkTools() {
 
   return (
     <div className="space-y-12">
-      <div className="text-center space-y-4">
+      <div className="text-center">
         <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Arsitektur Root</h2>
-        <p className="text-cyber-red font-mono text-[10px] tracking-[0.5em]">[ DNS_WHOIS_INFRASTRUKTUR_PROBE ]</p>
       </div>
 
-      <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex gap-0">
+      <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-0">
         <input
           type="text"
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
           placeholder="DOMAIN_TARGET..."
-          className="tactical-input"
+          className="tactical-input sm:border-r-0"
         />
-        <button type="submit" disabled={loading} className="tactical-btn">
+        <button type="submit" disabled={loading} className="tactical-btn sm:w-48">
           {loading ? <Loader2 className="animate-spin size-5" /> : <Search className="size-5" />}
           PROBE
         </button>

@@ -41,9 +41,8 @@ export default function MetadataSearch() {
 
   return (
     <div className="space-y-12">
-      <div className="text-center space-y-4">
+      <div className="text-center">
         <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Forensik Digital</h2>
-        <p className="text-cyber-red font-mono text-[10px] tracking-[0.5em]">[ EKSTRAKSI_METADATA_EXIF ]</p>
       </div>
 
       <div 
@@ -53,7 +52,7 @@ export default function MetadataSearch() {
         }`}
       >
         <input {...getInputProps()} />
-        <Image className={`size-12 mb-4 ${isDragActive ? "text-cyber-red scale-110" : "text-neutral-800"}`} />
+        <Image className={`size-12 mb-4 transition-all duration-300 ${isDragActive ? "text-cyber-red scale-110" : "text-neutral-500"}`} />
         <p className="font-mono text-xs text-gray-400 uppercase tracking-[0.2em]">
           {isDragActive ? "LEPASKAN_UNTUK_ANALISIS_" : "UNGGAH_FILE_GAMBAR_UNTUK_PROBE_EXIF_"}
         </p>

@@ -36,7 +36,7 @@ export default function About() {
            whileInView={{ opacity: 1, x: 0 }}
            className="tactical-card space-y-6 flex flex-col md:flex-row gap-8 items-center"
         >
-          <div className="shrink-0 w-32 h-44 bg-black border border-cyber-blue/30 overflow-hidden relative group">
+          <div className="shrink-0 w-32 h-44 bg-black border border-cyber-red/30 overflow-hidden relative group">
             <img 
               src="https://i1.sndcdn.com/avatars-000157159107-80sner-t240x240.jpg" 
               alt="Operator" 
@@ -91,7 +91,7 @@ export default function About() {
         </motion.div>
       </div>
 
-      <section className="tactical-card bg-slate-900/30 flex flex-col items-center text-center p-16 space-y-10 border-dashed border-2">
+      <section className="tactical-card bg-neutral-900/30 flex flex-col items-center text-center p-8 md:p-16 space-y-8 md:space-y-10 border-dashed border-2">
         <h3 className="text-4xl font-bold text-white tracking-tighter">BERDIRI_2026</h3>
         <p className="font-mono text-base text-cyber-muted max-w-2xl leading-loose">
           JSTeam OSINT tetap menjadi node utama untuk pengambilan informasi. 

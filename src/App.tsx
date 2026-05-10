@@ -73,23 +73,23 @@ export default function App() {
   return (
     <div className="min-h-screen bg-cyber-bg flex flex-col selection:bg-cyber-red selection:text-white">
       {/* Header */}
-      <header className="border-b border-cyber-border bg-black/90 backdrop-blur-xl sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <header className="border-b border-cyber-border bg-black/95 backdrop-blur-xl sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="relative group">
               <div className="absolute -inset-2 bg-cyber-red/20 rounded-full blur-xl group-hover:bg-cyber-red/40 transition-all duration-700" />
-              <div className="size-12 bg-black border border-cyber-border rounded-full overflow-hidden flex items-center justify-center relative">
+              <div className="size-12 bg-black border border-cyber-red/30 rounded-full overflow-hidden flex items-center justify-center relative">
                 <img 
-                  src="/logo.png" 
+                  src="https://i.pinimg.com/736x/3e/e8/65/3ee8658d8afa81d9048a46e2771fb9fc.jpg" 
                   alt="Garuda" 
-                  className="size-10 object-contain hover:scale-110 transition-transform duration-500"
+                  className="size-14 object-cover scale-150 hover:scale-[1.7] transition-transform duration-500"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = 'https://api.dicebear.com/7.x/identicon/svg?seed=Garuda&backgroundColor=000000&fontColor=ef4444';
                   }}
                 />
               </div>
             </div>
-            <h1 className="text-2xl font-sans font-bold uppercase tracking-[0.3em] text-white">
+            <h1 className="text-xl sm:text-2xl font-sans font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">
               JS<span className="text-cyber-red">TEAM</span>
             </h1>
           </div>

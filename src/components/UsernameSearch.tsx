@@ -30,20 +30,19 @@ export default function UsernameSearch() {
 
   return (
     <div className="space-y-12">
-      <div className="text-center space-y-4">
+      <div className="text-center">
         <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Pemindaian Identitas</h2>
-        <p className="text-cyber-red font-mono text-[10px] tracking-[0.5em]">[ OSINT_MULTI_PLATFORM_V4 ]</p>
       </div>
 
-      <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex gap-0">
+      <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-0 group">
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="IDENTITAS_TARGET..."
-          className="tactical-input"
+          className="tactical-input sm:border-r-0"
         />
-        <button type="submit" disabled={loading} className="tactical-btn shrink-0">
+        <button type="submit" disabled={loading} className="tactical-btn sm:w-48">
           {loading ? <Loader2 className="animate-spin size-5" /> : <Search className="size-5" />}
           EKSEKUSI
         </button>
@@ -55,7 +54,7 @@ export default function UsernameSearch() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <AnimatePresence>
           {results.map((result, idx) => (
             <motion.div
@@ -96,7 +95,7 @@ export default function UsernameSearch() {
       </div>
       
       {results.length > 0 && (
-        <div className="bg-black/80 border border-cyber-border p-4 font-mono text-[9px] text-gray-600 uppercase tracking-widest flex justify-between items-center">
+        <div className="bg-black/80 border border-cyber-border p-4 font-mono text-[9px] text-gray-600 uppercase tracking-widest flex flex-col sm:flex-row justify-between items-center gap-4">
           <span>RINGKASAN_HASIL: {results.filter(r => r.exists).length} AKTIF // {results.length} DIPERIKSA</span>
           <span className="text-cyber-red/40">JAKARTA_SEC_TEAM // UNIT_INTEL</span>
         </div>
