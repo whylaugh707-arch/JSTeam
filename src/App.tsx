@@ -17,7 +17,9 @@ import {
   X,
   Cpu,
   Fingerprint,
-  SearchCode
+  SearchCode,
+  MessageSquare,
+  Car
 } from 'lucide-react';
 import UsernameSearch from './components/UsernameSearch';
 import IPSearch from './components/IPSearch';
@@ -25,10 +27,12 @@ import NetworkTools from './components/NetworkTools';
 import MetadataSearch from './components/MetadataSearch';
 import GoogleDorker from './components/GoogleDorker';
 import VehicleSearch from './components/VehicleSearch';
+import NikSearch from './components/NikSearch';
+import SocialIntelligence from './components/SocialIntelligence';
 import About from './components/About';
 import { cn } from './lib/utils';
 
-type Tab = 'username' | 'ip' | 'network' | 'metadata' | 'dorker' | 'vehicle' | 'about';
+type Tab = 'username' | 'ip' | 'network' | 'metadata' | 'dorker' | 'vehicle' | 'nik' | 'social' | 'about';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('username');
@@ -67,11 +71,13 @@ export default function App() {
 
   const tabs = [
     { id: 'username', label: 'Cek Username', icon: Search },
+    { id: 'social', label: 'Intel Sosmed', icon: MessageSquare },
     { id: 'ip', label: 'Lacak IP', icon: MapPin },
     { id: 'network', label: 'Info Domain', icon: Globe },
     { id: 'metadata', label: 'Cek Metadata', icon: ImageIcon },
     { id: 'dorker', label: 'Google Dork', icon: SearchCode },
-    { id: 'vehicle', label: 'Pelacakan Plat', icon: Fingerprint },
+    { id: 'vehicle', label: 'Pelacakan Plat', icon: Car },
+    { id: 'nik', label: 'Analisis NIK', icon: Fingerprint },
     { id: 'about', label: 'Tentang JSTeam', icon: Info },
   ] as const;
 
@@ -191,6 +197,8 @@ export default function App() {
             {activeTab === 'metadata' && <MetadataSearch />}
             {activeTab === 'dorker' && <GoogleDorker />}
             {activeTab === 'vehicle' && <VehicleSearch />}
+            {activeTab === 'nik' && <NikSearch />}
+            {activeTab === 'social' && <SocialIntelligence />}
             {activeTab === 'about' && <About />}
           </motion.div>
         </AnimatePresence>
