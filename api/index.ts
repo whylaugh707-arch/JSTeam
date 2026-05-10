@@ -28,31 +28,36 @@ app.post("/api/osint/username", async (req, res) => {
     { name: "GitHub", url: `https://github.com/${username}` },
     { name: "Facebook", url: `https://www.facebook.com/${username}` },
     { name: "YouTube", url: `https://www.youtube.com/@${username}` },
-    { name: "Pinterest", url: `https://www.pinterest.com/${username}/` },
-    { name: "LinkedIn", url: `https://www.linkedin.com/in/${username}/` },
     { name: "Reddit", url: `https://www.reddit.com/user/${username}` },
-    { name: "Twitch", url: `https://www.twitch.tv/${username}` },
-    { name: "SoundCloud", url: `https://soundcloud.com/${username}` },
-    { name: "Medium", url: `https://medium.com/@${username}` },
     { name: "Steam", url: `https://steamcommunity.com/id/${username}` },
-    { name: "DeviantArt", url: `https://www.deviantart.com/${username}` },
+    { name: "LinkedIn", url: `https://www.linkedin.com/in/${username}/` },
+    { name: "Pinterest", url: `https://www.pinterest.com/${username}/` },
+    { name: "Medium", url: `https://medium.com/@${username}` },
+    { name: "SoundCloud", url: `https://soundcloud.com/${username}` },
+    { name: "Twitch", url: `https://www.twitch.tv/${username}` },
+    { name: "Wattpad", url: `https://www.wattpad.com/user/${username}` },
+    { name: "Ask.fm", url: `https://ask.fm/${username}` },
+    { name: "Spotify", url: `https://open.spotify.com/user/${username}` },
+    { name: "Quora", url: `https://www.quora.com/profile/${username}` },
+    { name: "Behance", url: `https://www.behance.net/${username}` },
+    { name: "Dribbble", url: `https://dribbble.com/${username}` },
     { name: "Linktree", url: `https://linktr.ee/${username}` },
     { name: "Telegram", url: `https://t.me/${username}` },
-    { name: "Bitbucket", url: `https://bitbucket.org/${username}/` },
-    { name: "WordPress", url: `https://${username}.wordpress.com/` },
+    { name: "Roblox", url: `https://www.roblox.com/user.aspx?username=${username}` },
   ];
 
   const scan = async (site: any) => {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000); // 4s timeout per site
+      const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout per site for better stability
 
       const response = await axios.get(site.url, { 
         signal: controller.signal,
         headers: { 
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+          'Accept-Language': 'en-US,en;q=0.9',
         },
-        maxRedirects: 3,
+        maxRedirects: 5,
         validateStatus: (status) => status < 500
       });
       clearTimeout(timeoutId);
@@ -60,12 +65,20 @@ app.post("/api/osint/username", async (req, res) => {
       const content = String(response.data).toLowerCase();
       let exists = response.status === 200;
 
-      // More robust checks for sites that use anti-bot or custom error pages
-      if (site.name === "Instagram" && (content.includes("login") || content.includes("checkpoint"))) exists = false;
-      if (site.name === "TikTok" && (content.includes("not found") || content.includes("couldn't find"))) exists = false;
-      if (site.name === "Twitter/X" && (content.includes("doesn’t exist") || content.includes("login"))) exists = false;
-      if (site.name === "Facebook" && (content.includes("not found") || content.includes("login"))) exists = false;
+      // Specific logic refinement for accuracy
+      if (site.name === "Instagram" && (content.includes("login") || content.includes("checkpoint") || content.includes("halaman ini tidak tersedia"))) exists = false;
+      if (site.name === "TikTok" && (content.includes("not found") || content.includes("couldn't find") || content.includes("halaman tidak ditemukan"))) exists = false;
+      if (site.name === "Twitter/X" && (content.includes("doesn’t exist") || content.includes("login") || content.includes("halaman tidak ada"))) exists = false;
+      if (site.name === "Facebook" && (content.includes("not found") || content.includes("login") || content.includes("konten tidak ditemukan"))) exists = false;
       if (site.name === "GitHub" && (content.includes("not found") || response.status === 404)) exists = false;
+      if (site.name === "LinkedIn" && (content.includes("halaman tidak ditemukan") || content.includes("not found"))) exists = false;
+      if (site.name === "Reddit" && (content.includes("not found") || content.includes("maaf, halaman ini tidak tersedia"))) exists = false;
+      if (site.name === "YouTube" && (content.includes("halaman tidak tersedia") || content.includes("not found"))) exists = false;
+      if (site.name === "Steam" && (content.includes("could not be found"))) exists = false;
+      if (site.name === "Roblox" && (content.includes("not found") || content.includes("tidak ditemukan"))) exists = false;
+      
+      // Generic check for 404
+      if (response.status === 404) exists = false;
 
       return { name: site.name, url: site.url, exists };
     } catch (error) {

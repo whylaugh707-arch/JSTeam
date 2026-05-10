@@ -24,10 +24,11 @@ import IPSearch from './components/IPSearch';
 import NetworkTools from './components/NetworkTools';
 import MetadataSearch from './components/MetadataSearch';
 import GoogleDorker from './components/GoogleDorker';
+import VehicleSearch from './components/VehicleSearch';
 import About from './components/About';
 import { cn } from './lib/utils';
 
-type Tab = 'username' | 'ip' | 'network' | 'metadata' | 'dorker' | 'about';
+type Tab = 'username' | 'ip' | 'network' | 'metadata' | 'dorker' | 'vehicle' | 'about';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('username');
@@ -70,6 +71,7 @@ export default function App() {
     { id: 'network', label: 'Info Domain', icon: Globe },
     { id: 'metadata', label: 'Cek Metadata', icon: ImageIcon },
     { id: 'dorker', label: 'Google Dork', icon: SearchCode },
+    { id: 'vehicle', label: 'Pelacakan Plat', icon: Fingerprint },
     { id: 'about', label: 'Tentang JSTeam', icon: Info },
   ] as const;
 
@@ -104,7 +106,7 @@ export default function App() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as Tab)}
                 className={cn(
-                  "px-6 py-2 text-[10px] font-mono tracking-[0.15em] uppercase transition-all flex items-center gap-3 relative z-10",
+                  "px-4 xl:px-6 py-2 text-[9px] xl:text-[10px] font-mono tracking-[0.1em] xl:tracking-[0.15em] uppercase transition-all flex items-center gap-2 xl:gap-3 relative z-10",
                   activeTab === tab.id 
                     ? "text-black font-bold" 
                     : "text-gray-500 hover:text-white"
@@ -118,7 +120,7 @@ export default function App() {
                   />
                 )}
                 <tab.icon className={cn("size-3 relative z-10", activeTab === tab.id ? "text-black" : "text-cyber-red/50")} />
-                <span className="relative z-10">{tab.label}</span>
+                <span className="relative z-10 whitespace-nowrap">{tab.label}</span>
               </button>
             ))}
           </nav>
@@ -137,6 +139,7 @@ export default function App() {
           </div>
         </div>
       </header>
+
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -187,6 +190,7 @@ export default function App() {
             {activeTab === 'network' && <NetworkTools />}
             {activeTab === 'metadata' && <MetadataSearch />}
             {activeTab === 'dorker' && <GoogleDorker />}
+            {activeTab === 'vehicle' && <VehicleSearch />}
             {activeTab === 'about' && <About />}
           </motion.div>
         </AnimatePresence>
