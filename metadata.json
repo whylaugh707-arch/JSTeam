@@ -1,6 +1,6 @@
 {
-  "name": "JSTeam OSINT",
-  "description": "Professional OSINT tool for social media investigation, IP geolocation, WHOIS, DNS, and metadata analysis. Built by JakartaSecTeam.",
+  "name": "JSTEAM | OSINT_INFRASTRUCTURE",
+  "description": "Professional OSINT architecture for identity scanning, network probing, and digital forensics. Node: Jakarta_Sec_Team.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }

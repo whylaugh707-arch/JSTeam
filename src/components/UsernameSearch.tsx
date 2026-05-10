@@ -29,9 +29,9 @@ export default function UsernameSearch() {
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       <div className="text-center">
-        <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Pemindaian Identitas</h2>
+        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">Pemindaian Identitas</h2>
       </div>
 
       <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-0 group">
@@ -42,7 +42,7 @@ export default function UsernameSearch() {
           placeholder="IDENTITAS_TARGET..."
           className="tactical-input sm:border-r-0"
         />
-        <button type="submit" disabled={loading} className="tactical-btn sm:w-48">
+        <button type="submit" disabled={loading} className="tactical-btn sm:w-48 whitespace-nowrap">
           {loading ? <Loader2 className="animate-spin size-5" /> : <Search className="size-5" />}
           EKSEKUSI
         </button>

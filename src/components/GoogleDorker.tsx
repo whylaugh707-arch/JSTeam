@@ -98,9 +98,9 @@ const GoogleDorker: React.FC = () => {
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       <div className="text-center">
-        <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Google Dorking</h2>
+        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">Google Dorking</h2>
       </div>
 
       <div className="max-w-3xl mx-auto">
@@ -161,7 +161,7 @@ const GoogleDorker: React.FC = () => {
                           </button>
                         </div>
                       </div>
-                      <code className="font-mono text-xs text-gray-500 break-all select-all selection:bg-cyber-red selection:text-white">
+                      <code className="font-mono text-[10px] sm:text-xs text-gray-500 break-all whitespace-pre-wrap select-all selection:bg-cyber-red selection:text-white">
                         {queryText}
                       </code>
                     </div>

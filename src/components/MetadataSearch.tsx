@@ -40,9 +40,9 @@ export default function MetadataSearch() {
   });
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       <div className="text-center">
-        <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Forensik Digital</h2>
+        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">Forensik Digital</h2>
       </div>
 
       <div 
