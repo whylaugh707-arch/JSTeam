@@ -32,7 +32,7 @@ export default function UsernameSearch() {
     <div className="space-y-12">
       <div className="text-center space-y-4">
         <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Pemindaian Identitas</h2>
-        <p className="text-cyber-blue font-mono text-[10px] tracking-[0.5em]">[ OSINT_MULTI_PLATFORM_V3 ]</p>
+        <p className="text-cyber-red font-mono text-[10px] tracking-[0.5em]">[ OSINT_MULTI_PLATFORM_V4 ]</p>
       </div>
 
       <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex gap-0">
@@ -64,11 +64,11 @@ export default function UsernameSearch() {
               animate={{ opacity: 1 }}
               transition={{ delay: idx * 0.01 }}
               className={`tactical-card flex items-center justify-between p-4 min-w-0 ${
-                result.exists ? "border-cyber-blue bg-cyber-blue/5" : "opacity-30 grayscale"
+                result.exists ? "border-cyber-red bg-cyber-red/5" : "opacity-30 grayscale"
               }`}
             >
               <div className="flex flex-col gap-1 overflow-hidden flex-1 mr-3">
-                <span className="font-mono text-[9px] text-cyber-blue uppercase tracking-tighter truncate block">
+                <span className="font-mono text-[9px] text-cyber-red uppercase tracking-tighter truncate block">
                   {result.name}
                 </span>
                 <span className="text-xs font-bold truncate text-white uppercase tracking-widest block">
@@ -81,14 +81,14 @@ export default function UsernameSearch() {
                     href={result.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-cyber-blue hover:text-white transition-colors"
+                    className="text-cyber-red hover:text-white transition-colors"
                   >
                     <ExternalLink className="size-4" />
                   </a>
                 ) : (
-                  <ShieldAlert className="size-4 text-slate-800" />
+                  <ShieldAlert className="size-4 text-neutral-800" />
                 )}
-                {result.exists && <ShieldCheck className="size-4 text-cyber-blue" />}
+                {result.exists && <ShieldCheck className="size-4 text-cyber-red" />}
               </div>
             </motion.div>
           ))}
@@ -98,7 +98,7 @@ export default function UsernameSearch() {
       {results.length > 0 && (
         <div className="bg-black/80 border border-cyber-border p-4 font-mono text-[9px] text-gray-600 uppercase tracking-widest flex justify-between items-center">
           <span>RINGKASAN_HASIL: {results.filter(r => r.exists).length} AKTIF // {results.length} DIPERIKSA</span>
-          <span className="text-cyber-blue/40">JAKARTA_SEC_TEAM // UNIT_INTEL</span>
+          <span className="text-cyber-red/40">JAKARTA_SEC_TEAM // UNIT_INTEL</span>
         </div>
       )}
     </div>

@@ -43,25 +43,25 @@ export default function MetadataSearch() {
     <div className="space-y-12">
       <div className="text-center space-y-4">
         <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Forensik Digital</h2>
-        <p className="text-cyber-blue font-mono text-[10px] tracking-[0.5em]">[ EKSTRAKSI_METADATA_EXIF ]</p>
+        <p className="text-cyber-red font-mono text-[10px] tracking-[0.5em]">[ EKSTRAKSI_METADATA_EXIF ]</p>
       </div>
 
       <div 
         {...getRootProps()} 
         className={`max-w-3xl mx-auto h-52 border border-cyber-border flex flex-col items-center justify-center transition-all cursor-pointer ${
-          isDragActive ? "bg-cyber-blue/10 border-cyber-blue" : "hover:bg-cyber-blue/5 hover:border-cyber-blue/30"
+          isDragActive ? "bg-cyber-red/10 border-cyber-red" : "hover:bg-cyber-red/5 hover:border-cyber-red/30"
         }`}
       >
         <input {...getInputProps()} />
-        <Image className={`size-12 mb-4 ${isDragActive ? "text-cyber-blue scale-110" : "text-gray-800"}`} />
-        <p className="font-mono text-xs text-gray-500 uppercase tracking-[0.2em]">
+        <Image className={`size-12 mb-4 ${isDragActive ? "text-cyber-red scale-110" : "text-neutral-800"}`} />
+        <p className="font-mono text-xs text-gray-400 uppercase tracking-[0.2em]">
           {isDragActive ? "LEPASKAN_UNTUK_ANALISIS_" : "UNGGAH_FILE_GAMBAR_UNTUK_PROBE_EXIF_"}
         </p>
       </div>
 
       {loading && (
         <div className="flex justify-center py-12">
-          <Loader2 className="animate-spin size-10 text-cyber-blue" />
+          <Loader2 className="animate-spin size-10 text-cyber-red" />
         </div>
       )}
 
@@ -74,7 +74,7 @@ export default function MetadataSearch() {
           <div className="space-y-8">
             <div className="tactical-card space-y-6">
               <h3 className="flex items-center gap-3 text-white font-sans text-xl uppercase tracking-widest">
-                <FileSearch className="size-5 text-cyber-blue" /> PREVIEW_GAMBAR
+                <FileSearch className="size-5 text-cyber-red" /> PREVIEW_GAMBAR
               </h3>
               {preview && (
                 <div className="aspect-video bg-black/40 border border-cyber-border overflow-hidden">
@@ -87,10 +87,10 @@ export default function MetadataSearch() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="tactical-card border-cyber-blue/40 bg-cyber-blue/5 space-y-6"
+                className="tactical-card border-cyber-red/40 bg-cyber-red/5 space-y-6"
               >
                 <h3 className="flex items-center gap-3 text-white font-sans text-xl uppercase tracking-widest">
-                  <ShieldCheck className="size-5 text-cyber-blue" /> DATA_GPS_TERDETEKSI
+                  <ShieldCheck className="size-5 text-cyber-red" /> DATA_GPS_TERDETEKSI
                 </h3>
                 <div className="p-6 bg-black/60 border border-cyber-border space-y-4 text-center">
                   <p className="font-mono text-lg text-white">
@@ -111,13 +111,13 @@ export default function MetadataSearch() {
 
           <div className="tactical-card space-y-6">
             <h3 className="flex items-center gap-3 text-white font-sans text-xl uppercase tracking-widest">
-              <Info className="size-5 text-cyber-blue" /> LOG_EKSTRAKSI
+              <Info className="size-5 text-cyber-red" /> LOG_EKSTRAKSI
             </h3>
             <div className="max-h-[550px] overflow-y-auto pr-2 space-y-2 font-mono text-[10px]">
               {Object.entries(metadata).length > 1 ? (
                 Object.entries(metadata).map(([key, value]) => (
                   <div key={key} className="flex flex-col border-b border-cyber-border pb-3 bg-black/20 p-3">
-                    <span className="text-cyber-blue/40 uppercase text-[8px] mb-1">{key}</span>
+                    <span className="text-cyber-red/40 uppercase text-[8px] mb-1">{key}</span>
                     <span className="text-white break-all">{String(value)}</span>
                   </div>
                 ))

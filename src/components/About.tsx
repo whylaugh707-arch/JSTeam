@@ -15,18 +15,18 @@ export default function About() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="inline-block p-6 border border-cyber-blue shadow-[0_0_30px_rgba(14,165,233,0.1)] rounded-full bg-cyber-card mb-4"
+          className="inline-block p-6 border border-cyber-red shadow-[0_0_30px_rgba(239,68,68,0.1)] rounded-full bg-cyber-card mb-4"
         >
-          <Shield className="size-16 text-cyber-blue" />
+          <Shield className="size-16 text-cyber-red" />
         </motion.div>
         <h1 className="text-6xl font-bold tracking-tighter text-white uppercase">
-          JS<span className="text-cyber-blue">TEAM</span> CORE
+          JS<span className="text-cyber-red">TEAM</span> CORE
         </h1>
         <div className="max-w-2xl mx-auto space-y-4">
-          <p className="text-xl font-mono text-cyber-blue italic leading-relaxed">
+          <p className="text-xl font-mono text-cyber-red italic leading-relaxed">
             "Bersenang senanglah didunia Nyata dan dunia Maya, Incarlah sesuatu yang mustahil, dan selalu ingat kata ini. &lt;No System Is Safe&gt;"
           </p>
-          <div className="h-0.5 w-12 bg-cyber-blue/30 mx-auto" />
+          <div className="h-0.5 w-12 bg-cyber-red/30 mx-auto" />
         </div>
       </section>
 
@@ -43,11 +43,11 @@ export default function About() {
               className="w-full h-full object-cover opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-cyber-bg to-transparent opacity-60" />
-            <div className="absolute bottom-2 left-2 font-mono text-[8px] text-cyber-blue">ID: WHYLAUGH_404</div>
+            <div className="absolute bottom-2 left-2 font-mono text-[8px] text-cyber-red">ID: WHYLAUGH_404</div>
           </div>
           <div className="space-y-4 flex-1">
             <h2 className="text-3xl flex items-center gap-3 font-bold text-white tracking-tight">
-              <Terminal className="size-8 text-cyber-blue" /> OPERATOR_404
+              <Terminal className="size-8 text-cyber-red" /> OPERATOR_404
             </h2>
             <div className="space-y-6 font-mono text-sm leading-relaxed text-cyber-muted">
               <p>
@@ -59,8 +59,8 @@ export default function About() {
                 Kode kami adalah suara kami. Alat kami adalah warisan kami.
               </p>
               <div className="pt-6 border-t border-cyber-border flex flex-wrap gap-4 text-[10px] uppercase tracking-[0.2em]">
-                 <span className="flex items-center gap-2 text-cyber-blue"><span className="w-1.5 h-1.5 bg-current rounded-full" /> KEAMANAN_SIBER</span>
-                 <span className="flex items-center gap-2 text-cyber-blue"><span className="w-1.5 h-1.5 bg-current rounded-full" /> ARSITEK_OSINT</span>
+                 <span className="flex items-center gap-2 text-cyber-red"><span className="w-1.5 h-1.5 bg-current rounded-full" /> KEAMANAN_SIBER</span>
+                 <span className="flex items-center gap-2 text-cyber-red"><span className="w-1.5 h-1.5 bg-current rounded-full" /> ARSITEK_OSINT</span>
               </div>
             </div>
           </div>
@@ -72,7 +72,7 @@ export default function About() {
            className="tactical-card space-y-6"
         >
           <h2 className="text-3xl flex items-center gap-3 font-bold text-white tracking-tight">
-            <Users className="size-8 text-cyber-blue" /> SEMUA_ALIANSI
+            <Users className="size-8 text-cyber-red" /> SEMUA_ALIANSI
           </h2>
           <div className="space-y-6 font-mono text-sm leading-relaxed text-cyber-muted">
             <p>
@@ -98,7 +98,7 @@ export default function About() {
           Alat yang dibangun oleh rakyat, untuk rakyat. 
           Kebenaran tidak ada di luar sana. Kebenaran ada di sini, tersembunyi di dalam bit.
         </p>
-        <div className="flex gap-12 font-mono text-[9px] text-cyber-blue/40 uppercase tracking-[1em]">
+        <div className="flex gap-12 font-mono text-[9px] text-cyber-red/40 uppercase tracking-[1em]">
           <span>INTEL_SYSTEM</span>
           <span>PROTOCOL_ALPHA</span>
         </div>

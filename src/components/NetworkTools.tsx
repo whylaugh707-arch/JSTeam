@@ -53,7 +53,7 @@ export default function NetworkTools() {
     <div className="space-y-12">
       <div className="text-center space-y-4">
         <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Arsitektur Root</h2>
-        <p className="text-cyber-blue font-mono text-[10px] tracking-[0.5em]">[ DNS_WHOIS_INFRASTRUKTUR_PROBE ]</p>
+        <p className="text-cyber-red font-mono text-[10px] tracking-[0.5em]">[ DNS_WHOIS_INFRASTRUKTUR_PROBE ]</p>
       </div>
 
       <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex gap-0">
@@ -85,12 +85,12 @@ export default function NetworkTools() {
             className="tactical-card space-y-6"
           >
             <h3 className="flex items-center gap-3 text-white font-sans text-xl uppercase tracking-widest">
-              <Zap className="size-5 text-cyber-blue" /> DNS_STACK
+              <Zap className="size-5 text-cyber-red" /> DNS_STACK
             </h3>
             <div className="space-y-3 font-mono text-[10px]">
               {dnsResults.map((record, i) => (
-                <div key={i} className="bg-black/50 p-3 border border-cyber-border flex gap-4 transition-colors hover:border-cyber-blue/40">
-                  <span className="text-cyber-blue font-bold w-12 shrink-0">{record.type}</span>
+                <div key={i} className="bg-black/50 p-3 border border-cyber-border flex gap-4 transition-colors hover:border-cyber-red/40">
+                  <span className="text-cyber-red font-bold w-12 shrink-0">{record.type}</span>
                   <span className="text-gray-400 break-all">{record.value || record.address || record.exchange || "NULL"}</span>
                 </div>
               ))}
@@ -105,7 +105,7 @@ export default function NetworkTools() {
             className="tactical-card space-y-6"
           >
             <h3 className="flex items-center gap-3 text-white font-sans text-xl uppercase tracking-widest">
-              <Database className="size-5 text-cyber-blue" /> DATA_PENDAFTAR
+              <Database className="size-5 text-cyber-red" /> DATA_PENDAFTAR
             </h3>
             <div className="max-h-[500px] overflow-y-auto pr-2 space-y-2 font-mono text-[10px]">
               {whoisResults ? (
@@ -113,7 +113,7 @@ export default function NetworkTools() {
                   if (typeof value === 'object' || Array.isArray(value)) return null;
                   return (
                     <div key={key} className="flex flex-col border-b border-cyber-border pb-2 bg-black/20 p-2 gap-1 overflow-hidden">
-                      <span className="text-cyber-blue/40 uppercase text-[8px] tracking-[0.2em]">{key}</span>
+                      <span className="text-cyber-red/40 uppercase text-[8px] tracking-[0.2em]">{key}</span>
                       <span className="text-white break-all leading-tight">{String(value)}</span>
                     </div>
                   )

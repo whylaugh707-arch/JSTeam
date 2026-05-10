@@ -43,15 +43,15 @@ export default function App() {
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-cyber-blue"
+          className="text-cyber-red"
         >
           <Cpu className="size-16 animate-pulse" />
         </motion.div>
-        <div className="font-mono text-cyber-blue text-sm flex flex-col items-center">
-          <p className="animate-pulse tracking-[0.4em]">INISIASI_PROTOKOL_JSTEAM...</p>
+        <div className="font-mono text-cyber-red text-sm flex flex-col items-center">
+          <p className="animate-pulse tracking-[0.4em]">INISIASI_PROTOKOL_GARUDA...</p>
           <div className="w-64 h-[2px] bg-cyber-border mt-6 overflow-hidden">
             <motion.div 
-              className="h-full bg-cyber-blue"
+              className="h-full bg-cyber-red"
               initial={{ width: 0 }}
               animate={{ width: '100%' }}
               transition={{ duration: 1.8, ease: "easeInOut" }}
@@ -71,16 +71,26 @@ export default function App() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-cyber-bg flex flex-col selection:bg-cyber-blue selection:text-white">
+    <div className="min-h-screen bg-cyber-bg flex flex-col selection:bg-cyber-red selection:text-white">
       {/* Header */}
       <header className="border-b border-cyber-border bg-black/90 backdrop-blur-xl sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="bg-cyber-blue px-2 py-1 transition-colors duration-500">
-              <Shield className="size-6 text-black" />
+            <div className="relative group">
+              <div className="absolute -inset-2 bg-cyber-red/20 rounded-full blur-xl group-hover:bg-cyber-red/40 transition-all duration-700" />
+              <div className="size-12 bg-black border border-cyber-border rounded-full overflow-hidden flex items-center justify-center relative">
+                <img 
+                  src="/logo.png" 
+                  alt="Garuda" 
+                  className="size-10 object-contain hover:scale-110 transition-transform duration-500"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://api.dicebear.com/7.x/identicon/svg?seed=Garuda&backgroundColor=000000&fontColor=ef4444';
+                  }}
+                />
+              </div>
             </div>
-            <h1 className="text-2xl font-sans font-bold uppercase tracking-[0.25em] text-white">
-              JS<span className="text-cyber-blue">TEAM</span>
+            <h1 className="text-2xl font-sans font-bold uppercase tracking-[0.3em] text-white">
+              JS<span className="text-cyber-red">TEAM</span>
             </h1>
           </div>
 
@@ -100,11 +110,11 @@ export default function App() {
                 {activeTab === tab.id && (
                   <motion.div 
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-cyber-blue"
+                    className="absolute inset-0 bg-cyber-red"
                     transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                   />
                 )}
-                <tab.icon className={cn("size-3 relative z-10", activeTab === tab.id ? "text-black" : "text-cyber-blue/50")} />
+                <tab.icon className={cn("size-3 relative z-10", activeTab === tab.id ? "text-black" : "text-cyber-red/50")} />
                 <span className="relative z-10">{tab.label}</span>
               </button>
             ))}
@@ -112,11 +122,11 @@ export default function App() {
 
           <div className="flex items-center gap-6">
             <div className="hidden xl:flex flex-col items-end font-mono text-[8px] text-gray-700 leading-none gap-1.5">
-              <span className="flex items-center gap-1.5"><span className="w-1 h-1 bg-cyber-blue rounded-full" /> SISTEM: NOMINAL</span>
+              <span className="flex items-center gap-1.5"><span className="w-1 h-1 bg-cyber-red rounded-full" /> SISTEM: AKTIF</span>
               <span>NODE: JAKARTA_SEC_TEAM</span>
             </div>
             <button 
-              className="lg:hidden text-cyber-blue p-2 border border-cyber-border hover:bg-cyber-blue/10"
+              className="lg:hidden text-cyber-red p-2 border border-cyber-border hover:bg-cyber-red/10"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -144,7 +154,7 @@ export default function App() {
                 className={cn(
                   "w-full p-6 font-mono text-sm tracking-[0.2em] uppercase flex items-center gap-6 border transition-all",
                   activeTab === tab.id 
-                    ? "bg-cyber-blue text-black border-cyber-blue shadow-[0_0_20px_rgba(14,165,233,0.2)]" 
+                    ? "bg-cyber-red text-black border-cyber-red shadow-[0_0_20px_rgba(239,68,68,0.2)]" 
                     : "border-cyber-border text-gray-500"
                 )}
               >
@@ -152,8 +162,8 @@ export default function App() {
                 {tab.label}
               </button>
             ))}
-            <div className="mt-auto p-12 text-center opacity-10 grayscale">
-                 <Shield className="size-32 mx-auto" />
+            <div className="mt-auto p-12 text-center opacity-10 blur-sm grayscale">
+                 <Shield className="size-32 mx-auto text-cyber-red" />
             </div>
           </motion.div>
         )}
@@ -182,11 +192,11 @@ export default function App() {
       <footer className="border-t border-cyber-border py-8 px-6 bg-black/40">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-6 font-mono text-[10px] text-gray-700">
-            <span className="flex items-center gap-2"><Fingerprint className="size-3" /> TRACK_ID: {Math.random().toString(36).substring(7).toUpperCase()}</span>
+            <span className="flex items-center gap-2"><Fingerprint className="size-3 text-cyber-red" /> TRACK_ID: {Math.random().toString(36).substring(7).toUpperCase()}</span>
             <span className="hidden sm:inline border-l border-cyber-border pl-6">NODE_ADDR: 127.0.0.1</span>
           </div>
-          <p className="font-mono text-[9px] text-gray-500 uppercase tracking-[0.4em] text-center">
-            JSTEAM_OSINT_NETWORK_NODE
+          <p className="font-mono text-[9px] text-gray-500 uppercase tracking-[0.5em] text-center">
+            GARUDA_OSINT_NETWORK_NODE
           </p>
         </div>
       </footer>

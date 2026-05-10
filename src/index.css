@@ -5,23 +5,22 @@
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* Refined Pro-Hacker Palette - Slate & Cyan */
-  --color-cyber-green: #10b981;  /* Emerald 500 */
-  --color-cyber-blue: #0ea5e9;   /* Cyan 500 */
-  --color-cyber-bg: #020617;     /* Slate 950 */
-  --color-cyber-card: #0f172a;   /* Slate 900 */
-  --color-cyber-border: #1e293b; /* Slate 800 */
-  --color-cyber-text: #f8fafc;   /* Slate 50 */
-  --color-cyber-muted: #64748b;  /* Slate 400 */
+  /* JakartaSecteam Palette - Red, Black, White */
+  --color-cyber-red: #ef4444;    /* Red 500 */
+  --color-cyber-bg: #0a0a0a;     /* Neutral 950 */
+  --color-cyber-card: #171717;   /* Neutral 900 */
+  --color-cyber-border: #262626; /* Neutral 800 */
+  --color-cyber-text: #fafafa;   /* Neutral 50 */
+  --color-cyber-muted: #737373;  /* Neutral 400 */
 }
 
 @layer base {
   body {
-    @apply bg-cyber-bg text-cyber-text font-sans antialiased selection:bg-cyber-blue selection:text-white relative overflow-x-hidden;
+    @apply bg-cyber-bg text-cyber-text font-sans antialiased selection:bg-cyber-red selection:text-white relative overflow-x-hidden;
     background-image: 
-      radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.05) 0%, transparent 50%),
-      linear-gradient(rgba(15, 23, 42, 0.5) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(15, 23, 42, 0.5) 1px, transparent 1px);
+      radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.05) 0%, transparent 50%),
+      linear-gradient(rgba(38, 38, 38, 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(38, 38, 38, 0.5) 1px, transparent 1px);
     background-size: 100% 100%, 30px 30px, 30px 30px;
   }
 
@@ -35,7 +34,7 @@
   body::after {
     content: " ";
     @apply fixed inset-0 pointer-events-none z-[101] opacity-[0.02];
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(239, 68, 68, 0.06), rgba(0, 0, 0, 0.02), rgba(239, 68, 68, 0.06));
     background-size: 100% 4px, 3px 100%;
   }
 
@@ -52,11 +51,11 @@
 
   .tactical-card::after {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-br from-cyber-blue/5 to-transparent pointer-events-none opacity-0 transition-opacity duration-500;
+    @apply absolute inset-0 bg-gradient-to-br from-cyber-red/5 to-transparent pointer-events-none opacity-0 transition-opacity duration-500;
   }
 
   .tactical-card:hover {
-    @apply border-cyber-blue/40 -translate-y-1 transform;
+    @apply border-cyber-red/40 -translate-y-1 transform;
   }
   
   .tactical-card:hover::after {
@@ -64,12 +63,18 @@
   }
 
   .tactical-input {
-    @apply bg-slate-950/80 border border-cyber-border rounded-sm px-5 py-4 focus:border-cyber-blue focus:outline-none focus:ring-1 focus:ring-cyber-blue/50 text-white font-mono placeholder:text-slate-600 w-full transition-all text-sm;
+    @apply bg-black/80 border border-cyber-border rounded-sm px-5 py-4 focus:border-cyber-red focus:outline-none focus:ring-1 focus:ring-cyber-red/50 text-white font-mono placeholder:text-neutral-600 w-full transition-all text-sm;
+  }
+
+  .tactical-input::-webkit-outer-spin-button,
+  .tactical-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 
   .tactical-btn {
-    @apply bg-cyber-blue text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white hover:text-slate-950 transition-all active:scale-[0.97] rounded-sm disabled:opacity-40 disabled:grayscale flex items-center justify-center gap-3 text-xs border border-cyber-blue/50;
-    box-shadow: 4px 4px 0px rgba(14, 165, 233, 0.2);
+    @apply bg-cyber-red text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all active:scale-[0.97] rounded-sm disabled:opacity-40 disabled:grayscale flex items-center justify-center gap-3 text-xs border border-cyber-red/50;
+    box-shadow: 4px 4px 0px rgba(239, 68, 68, 0.2);
   }
 
   .tactical-btn:hover {

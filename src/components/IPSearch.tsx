@@ -32,7 +32,7 @@ export default function IPSearch() {
     <div className="space-y-12">
       <div className="text-center space-y-4">
         <h2 className="text-4xl font-sans uppercase tracking-[0.3em] text-white">Intel Geografis</h2>
-        <p className="text-cyber-blue font-mono text-[10px] tracking-[0.5em]">[ PELACAKAN_GEOLOKASI_JARINGAN ]</p>
+        <p className="text-cyber-red font-mono text-[10px] tracking-[0.5em]">[ PELACAKAN_GEOLOKASI_JARINGAN ]</p>
       </div>
 
       <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex gap-0">
@@ -63,7 +63,7 @@ export default function IPSearch() {
         >
           <div className="tactical-card space-y-6">
             <h3 className="flex items-center gap-3 text-white font-sans text-xl tracking-wider">
-              <Globe className="size-5 text-cyber-blue" /> LOG_LOKASI
+              <Globe className="size-5 text-cyber-red" /> LOG_LOKASI
             </h3>
             <div className="space-y-4 font-mono text-xs text-gray-400">
               <div className="flex justify-between border-b border-cyber-border pb-2 gap-4">
@@ -87,7 +87,7 @@ export default function IPSearch() {
 
           <div className="tactical-card space-y-6">
             <h3 className="flex items-center gap-3 text-white font-sans text-xl tracking-wider">
-              <Server className="size-5 text-cyber-blue" /> LOG_INFRASTRUKTUR
+              <Server className="size-5 text-cyber-red" /> LOG_INFRASTRUKTUR
             </h3>
             <div className="space-y-4 font-mono text-xs text-gray-400">
               <div className="flex justify-between border-b border-cyber-border pb-2 gap-4">
@@ -110,9 +110,9 @@ export default function IPSearch() {
           </div>
 
           {results.latitude && results.longitude && (
-            <div className="md:col-span-2 tactical-card bg-slate-950 h-48 flex items-center justify-center border-dashed group">
+            <div className="md:col-span-2 tactical-card bg-black h-48 flex items-center justify-center border-dashed group">
                <div className="text-center space-y-4 relative z-10 transition-transform group-hover:scale-105">
-                  <MapPin className="size-10 mx-auto text-cyber-blue animate-pulse" />
+                  <MapPin className="size-10 mx-auto text-cyber-red animate-pulse" />
                   <a 
                       href={`https://www.google.com/maps?q=${results.latitude},${results.longitude}`} 
                       target="_blank" 
