@@ -24,12 +24,11 @@ app.post("/api/osint/username", async (req, res) => {
   const sites = [
     { name: "Instagram", url: `https://www.instagram.com/${username}/` },
     { name: "TikTok", url: `https://www.tiktok.com/@${username}` },
-    { name: "Twitter/X", url: `https://twitter.com/${username}` },
-    { name: "GitHub", url: `https://github.com/${username}` },
+    { name: "X (Twitter)", url: `https://twitter.com/${username}` },
     { name: "Facebook", url: `https://www.facebook.com/${username}` },
     { name: "YouTube", url: `https://www.youtube.com/@${username}` },
     { name: "Reddit", url: `https://www.reddit.com/user/${username}` },
-    { name: "Steam", url: `https://steamcommunity.com/id/${username}` },
+    { name: "GitHub", url: `https://github.com/${username}` },
     { name: "LinkedIn", url: `https://www.linkedin.com/in/${username}/` },
     { name: "Pinterest", url: `https://www.pinterest.com/${username}/` },
     { name: "Medium", url: `https://medium.com/@${username}` },
@@ -43,7 +42,6 @@ app.post("/api/osint/username", async (req, res) => {
     { name: "Dribbble", url: `https://dribbble.com/${username}` },
     { name: "Linktree", url: `https://linktr.ee/${username}` },
     { name: "Telegram", url: `https://t.me/${username}` },
-    { name: "Roblox", url: `https://www.roblox.com/user.aspx?username=${username}` },
   ];
 
   const scan = async (site: any) => {
