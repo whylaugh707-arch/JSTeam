@@ -203,7 +203,7 @@ if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
     appType: "spa",
   });
   app.use(vite.middlewares);
-} else if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
+} else {
   const distPath = path.join(process.cwd(), "dist");
   app.use(express.static(distPath));
   app.get("*", (req, res) => {

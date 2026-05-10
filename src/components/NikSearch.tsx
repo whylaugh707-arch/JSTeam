@@ -109,13 +109,13 @@ const NikSearch: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-12">
+    <div className="space-y-6 sm:space-y-12">
       <div className="text-center">
         <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">NIK Analyzer</h2>
         <p className="text-[10px] text-gray-500 mt-2 font-mono uppercase tracking-widest">Digital Identity Extraction Engine</p>
       </div>
 
-      <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-0 group">
+      <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-0 group px-4 sm:px-0">
         <div className="relative flex-1">
           <input
             type="text"
@@ -201,7 +201,7 @@ const NikSearch: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <div className="max-w-4xl mx-auto tactical-card p-4 bg-yellow-500/5 border-yellow-500/30 flex gap-4 items-start translate-y-8">
+      <div className="max-w-4xl mx-auto tactical-card p-4 bg-yellow-500/5 border-yellow-500/30 flex gap-4 items-start sm:translate-y-8">
         <Info className="size-5 text-yellow-500 shrink-0 mt-1" />
         <div className="space-y-1">
           <p className="text-[10px] text-yellow-500/80 font-mono uppercase font-bold leading-tight">
