@@ -16,16 +16,18 @@ import {
   Menu, 
   X,
   Cpu,
-  Fingerprint
+  Fingerprint,
+  SearchCode
 } from 'lucide-react';
 import UsernameSearch from './components/UsernameSearch';
 import IPSearch from './components/IPSearch';
 import NetworkTools from './components/NetworkTools';
 import MetadataSearch from './components/MetadataSearch';
+import GoogleDorker from './components/GoogleDorker';
 import About from './components/About';
 import { cn } from './lib/utils';
 
-type Tab = 'username' | 'ip' | 'network' | 'metadata' | 'about';
+type Tab = 'username' | 'ip' | 'network' | 'metadata' | 'dorker' | 'about';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('username');
@@ -67,6 +69,7 @@ export default function App() {
     { id: 'ip', label: 'Lacak IP', icon: MapPin },
     { id: 'network', label: 'Info Domain', icon: Globe },
     { id: 'metadata', label: 'Cek Metadata', icon: ImageIcon },
+    { id: 'dorker', label: 'Google Dork', icon: SearchCode },
     { id: 'about', label: 'Tentang JSTeam', icon: Info },
   ] as const;
 
@@ -183,6 +186,7 @@ export default function App() {
             {activeTab === 'ip' && <IPSearch />}
             {activeTab === 'network' && <NetworkTools />}
             {activeTab === 'metadata' && <MetadataSearch />}
+            {activeTab === 'dorker' && <GoogleDorker />}
             {activeTab === 'about' && <About />}
           </motion.div>
         </AnimatePresence>
