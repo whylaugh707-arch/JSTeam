@@ -18,8 +18,16 @@ export default function MetadataSearch() {
     setPreview(URL.createObjectURL(file));
 
     try {
-      const output = await exifr.parse(file);
-      if (!output) {
+      const output = await exifr.parse(file, {
+        tiff: true,
+        xmp: true,
+        icc: true,
+        iptc: true,
+        jfif: true,
+        ihdr: true,
+      });
+      
+      if (!output || Object.keys(output).length === 0) {
         setMetadata({ error: "ZERO_METADATA_DETECTED: FILE_CLEANSED" });
       } else {
         setMetadata(output);
@@ -113,17 +121,17 @@ export default function MetadataSearch() {
               <Info className="size-5 text-cyber-red" /> LOG_EKSTRAKSI
             </h3>
             <div className="max-h-[550px] overflow-y-auto pr-2 space-y-2 font-mono text-[10px]">
-              {Object.entries(metadata).length > 1 ? (
+              {!metadata.error ? (
                 Object.entries(metadata).map(([key, value]) => (
                   <div key={key} className="flex flex-col border-b border-cyber-border pb-3 bg-black/20 p-3">
                     <span className="text-cyber-red/40 uppercase text-[8px] mb-1">{key}</span>
-                    <span className="text-white break-all">{String(value)}</span>
+                    <span className="text-white break-all">{typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}</span>
                   </div>
                 ))
               ) : (
                 <div className="flex flex-col items-center justify-center h-48 border border-red-500/20 bg-red-500/5 p-6 space-y-4">
                   <ShieldCheck className="size-10 text-red-500 opacity-30" />
-                  <span className="text-red-500 font-bold uppercase tracking-widest">{metadata.error || "TIDAK_ADA_DATA_TERDETEKSI"}</span>
+                  <span className="text-red-500 font-bold uppercase tracking-widest text-center">{metadata.error}</span>
                 </div>
               )}
             </div>
