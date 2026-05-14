@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'WhyLaugh404',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    cleartext: true
   }
 };
 

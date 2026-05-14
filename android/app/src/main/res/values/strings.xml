@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">WhyLaugh404</string>
+    <string name="title_activity_main">WhyLaugh404</string>
+    <string name="package_name">com.whylaugh404.app</string>
+    <string name="custom_url_scheme">com.whylaugh404.app</string>
+</resources>

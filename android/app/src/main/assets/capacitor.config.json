@@ -1,0 +1,9 @@
+{
+	"appId": "com.whylaugh404.app",
+	"appName": "WhyLaugh404",
+	"webDir": "dist",
+	"server": {
+		"androidScheme": "https",
+		"cleartext": true
+	}
+}
