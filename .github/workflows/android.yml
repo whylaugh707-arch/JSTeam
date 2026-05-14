@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build Web
-        run: npm run build
+        run: VITE_API_URL=https://ais-pre-faum33tc7svfhqeq3algvf-125749415297.asia-southeast1.run.app npm run build
       - name: Add Android Platform
         run: |
           if [ ! -d "android" ]; then
