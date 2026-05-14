@@ -1,15 +1,21 @@
 import axios from "axios";
 import { UsernameScanResult, IPInfo, DNSRecord, WhoisResult } from "../types";
 
+const PRODUCTION_API_URL = "https://ais-pre-faum33tc7svfhqeq3algvf-125749415297.asia-southeast1.run.app";
+
 export const getApiBaseUrl = () => {
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  console.log("DEBUG: API Origin:", origin);
-  return origin;
+  if (typeof window !== 'undefined') {
+    // If it's a web browser (not capacitor localhost), use the current origin
+    if (window.location.origin.startsWith('http')) {
+      return window.location.origin;
+    }
+  }
+  // Otherwise, use production URL
+  return PRODUCTION_API_URL;
 };
 
 export const scanUsername = async (username: string): Promise<UsernameScanResult[]> => {
   const baseUrl = getApiBaseUrl();
-  console.log("DEBUG: Calling:", `${baseUrl}/api/osint/username`);
   try {
     const response = await axios.post(`${baseUrl}/api/osint/username`, { username });
     return response.data;

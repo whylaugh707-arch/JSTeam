@@ -16,10 +16,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use((req, res, next) => {
-  console.log(`Backend received: ${req.method} ${req.url}`);
-  next();
-});
 
 // API Routes
 app.get("/api/health", (req, res) => {
