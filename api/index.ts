@@ -197,12 +197,14 @@ app.get("/api/osint/whois/:domain", async (req, res) => {
 
 // Vite middleware for development
 if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
-  const { createServer: createViteServer } = await import("vite");
-  const vite = await createViteServer({
-    server: { middlewareMode: true },
-    appType: "spa",
+  import("vite").then(({ createServer: createViteServer }) => {
+    createViteServer({
+      server: { middlewareMode: true },
+      appType: "spa",
+    }).then((vite) => {
+      app.use(vite.middlewares);
+    });
   });
-  app.use(vite.middlewares);
 } else {
   const distPath = path.join(process.cwd(), "dist");
   app.use(express.static(distPath));
