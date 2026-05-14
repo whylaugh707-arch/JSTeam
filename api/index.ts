@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import axios from "axios";
 import dns from "dns";
+import cors from "cors";
 import { promisify } from "util";
 
 const resolveAny = promisify(dns.resolveAny);
@@ -9,6 +10,7 @@ const resolveAny = promisify(dns.resolveAny);
 const app = express();
 const PORT = 3000;
 
+app.use(cors());
 app.use(express.json());
 
 // API Routes
