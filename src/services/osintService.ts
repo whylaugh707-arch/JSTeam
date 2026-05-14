@@ -4,6 +4,13 @@ import { UsernameScanResult, IPInfo, DNSRecord, WhoisResult } from "../types";
 const PRODUCTION_API_URL = "https://ais-dev-faum33tc7svfhqeq3algvf-125749415297.asia-southeast1.run.app";
 
 export const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    // If running in a browser, use the current origin
+    if (window.location.protocol.startsWith('http')) {
+      return window.location.origin;
+    }
+  }
+  // Fallback to production URL if not available in window
   return PRODUCTION_API_URL;
 };
 
