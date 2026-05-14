@@ -10,8 +10,16 @@ const resolveAny = promisify(dns.resolveAny);
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
 app.use(express.json());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use((req, res, next) => {
+  console.log(`Backend received: ${req.method} ${req.url}`);
+  next();
+});
 
 // API Routes
 app.get("/api/health", (req, res) => {
@@ -198,7 +206,7 @@ app.get("/api/osint/whois/:domain", async (req, res) => {
 });
 
 // Vite middleware for development
-if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+if (process.env.NODE_ENV === "development") {
   import("vite").then(({ createServer: createViteServer }) => {
     createViteServer({
       server: { middlewareMode: true },
@@ -210,8 +218,11 @@ if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
 } else {
   const distPath = path.join(process.cwd(), "dist");
   app.use(express.static(distPath));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(distPath, "index.html"));
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
   });
 }
 

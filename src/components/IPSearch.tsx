@@ -22,7 +22,7 @@ export default function IPSearch() {
       const data = await getIPInfo(ip);
       setResults(data);
     } catch (err: any) {
-      setError(err.response?.data?.error || "NODE_RESOLUTION_FAILED: TARGET_IP_OUT_OF_SCOPE_OR_INVALID");
+      setError(err.response?.data?.error || err.message || "NODE_RESOLUTION_FAILED");
     } finally {
       setLoading(false);
     }

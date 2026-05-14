@@ -34,7 +34,7 @@ export default function UsernameSearch() {
       const data = await scanUsername(username);
       setResults(data);
     } catch (err: any) {
-      setError(err.response?.data?.error || "COMMUNICATION_LINK_FAILURE: ATTEMPTING_RECONNECT");
+      setError(err.response?.data?.error || err.message || "COMMUNICATION_LINK_FAILURE");
     } finally {
       setLoading(false);
     }
