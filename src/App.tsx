@@ -41,7 +41,17 @@ export default function App() {
 
   useEffect(() => {
     const timer = setTimeout(() => setBooting(false), 2000);
-    return () => clearTimeout(timer);
+    
+    const handleBeforeUnload = () => {
+      localStorage.clear();
+      sessionStorage.clear();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   if (booting) {
@@ -182,7 +192,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-16">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-16">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
