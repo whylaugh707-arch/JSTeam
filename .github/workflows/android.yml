@@ -10,12 +10,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: Install dependencies
         run: npm install
       - name: Build Web
         run: npm run build
       - name: Add Android Platform
-        run: npx cap add android
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
       - name: Sync Android
         run: npx cap sync
       - name: Build APK
