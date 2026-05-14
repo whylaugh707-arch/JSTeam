@@ -1,7 +1,7 @@
 import axios from "axios";
 import { UsernameScanResult, IPInfo, DNSRecord, WhoisResult } from "../types";
 
-const PRODUCTION_API_URL = "https://ais-dev-faum33tc7svfhqeq3algvf-125749415297.asia-southeast1.run.app";
+const PRODUCTION_API_URL = "https://ais-pre-faum33tc7svfhqeq3algvf-125749415297.asia-southeast1.run.app";
 
 export const getApiBaseUrl = () => {
   return PRODUCTION_API_URL;

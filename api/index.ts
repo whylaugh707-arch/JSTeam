@@ -191,7 +191,7 @@ app.get("/api/osint/whois/:domain", async (req, res) => {
 
     for (const url of providers) {
       try {
-        const response = await axios.get(url, { timeout: 5000 });
+        const response = await axios.get(url, { timeout: 15000 });
         if (response.data && Object.keys(response.data).length > 0) {
           return res.json(response.data);
         }
