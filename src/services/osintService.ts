@@ -2,7 +2,7 @@ import axios from "axios";
 import { Capacitor } from '@capacitor/core';
 import { UsernameScanResult, IPInfo, DNSRecord, WhoisResult } from "../types";
 
-const PRODUCTION_API_URL = "https://ais-pre-faum33tc7svfhqeq3algvf-125749415297.asia-southeast1.run.app";
+const PRODUCTION_API_URL = "https://jsteam-production-8f09.up.railway.app";
 
 export const getApiBaseUrl = () => {
   // If running embedded within an iOS/Android physical app, use the fixed production URL
