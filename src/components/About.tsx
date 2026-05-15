@@ -168,7 +168,7 @@ export default function About() {
           "Bersenang senanglah didunia Nyata dan dunia Maya, Incarlah sesuatu yang mustahil, dan selalu ingat kata ini. &lt;No System Is Safe&gt;"
         </p>
         <p className="font-mono text-xs text-gray-500 uppercase tracking-widest bg-black px-4 py-2 inline-block border border-gray-800">
-          OPERATOR: WHYLAUGH_404
+          OPERATOR: JST_CORE_NODE
         </p>
       </div>
 

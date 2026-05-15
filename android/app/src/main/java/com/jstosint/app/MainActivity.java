@@ -1,4 +1,4 @@
-package com.whylaugh404.app;
+package com.jstosint.app;
 
 import com.getcapacitor.BridgeActivity;
 
