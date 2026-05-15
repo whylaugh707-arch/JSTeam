@@ -4,6 +4,7 @@ import axios from "axios";
 import dns from "dns";
 import cors from "cors";
 import { promisify } from "util";
+import crypto from "crypto";
 
 const resolveAny = promisify(dns.resolveAny);
 
@@ -295,6 +296,62 @@ app.get("/api/osint/whois/:domain", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "REGISTRY_TIMEOUT_OR_BLOCKED" });
   }
+});
+
+// Email Search using XposedOrNot and Gravatar
+app.get("/api/osint/email/:email", async (req, res) => {
+  const { email } = req.params;
+  const results = {
+    breaches: [],
+    gravatar: null
+  };
+
+  try {
+    // 1. Check Gravatar
+    const emailHash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
+    try {
+      const gravatarResponse = await axios.get(`https://en.gravatar.com/${emailHash}.json`, {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        timeout: 5000
+      });
+      if (gravatarResponse.data && gravatarResponse.data.entry && gravatarResponse.data.entry.length > 0) {
+        results.gravatar = gravatarResponse.data.entry[0];
+      }
+    } catch (gErr: any) {
+      // 404 means no gravatar found, ignore other errors
+    }
+
+    // 2. Check XposedOrNot
+    const response = await axios.get(`https://api.xposedornot.com/v1/check-email/${email}`, { 
+      timeout: 15000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*'
+      }
+    });
+    
+    if (response.data && response.data.breaches) {
+       results.breaches = response.data.breaches;
+    }
+  } catch (error: any) {
+    if (error.response && error.response.status === 404) {
+      // 404 means no breaches found
+    } else {
+      const statusCode = error.response ? error.response.status : (error.code === 'ECONNABORTED' ? 408 : 500);
+      const errorDetails = error.message || "Unknown error";
+      console.error("XposedOrNot Error:", errorDetails);
+      
+      return res.status(statusCode).json({ 
+        error: statusCode === 408 
+          ? "Waktu pencarian habis. Server sumber terlalu lama merespon." 
+          : statusCode === 403 
+          ? "Akses diblokir oleh sistem anti-bot tujuan. Coba server berbeda."
+          : `Gagal memproses permintaan pelacakan (Status ${statusCode}).`
+      });
+    }
+  }
+  
+  res.json(results);
 });
 
 // Vite middleware for development

@@ -38,6 +38,7 @@ var import_axios = __toESM(require("axios"), 1);
 var import_dns = __toESM(require("dns"), 1);
 var import_cors = __toESM(require("cors"), 1);
 var import_util = require("util");
+var import_crypto = __toESM(require("crypto"), 1);
 var resolveAny = (0, import_util.promisify)(import_dns.default.resolveAny);
 var app = (0, import_express.default)();
 var PORT = 3e3;
@@ -285,6 +286,47 @@ app.get("/api/osint/whois/:domain", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "REGISTRY_TIMEOUT_OR_BLOCKED" });
   }
+});
+app.get("/api/osint/email/:email", async (req, res) => {
+  const { email } = req.params;
+  const results = {
+    breaches: [],
+    gravatar: null
+  };
+  try {
+    const emailHash = import_crypto.default.createHash("md5").update(email.toLowerCase().trim()).digest("hex");
+    try {
+      const gravatarResponse = await import_axios.default.get(`https://en.gravatar.com/${emailHash}.json`, {
+        headers: { "User-Agent": "Mozilla/5.0" },
+        timeout: 5e3
+      });
+      if (gravatarResponse.data && gravatarResponse.data.entry && gravatarResponse.data.entry.length > 0) {
+        results.gravatar = gravatarResponse.data.entry[0];
+      }
+    } catch (gErr) {
+    }
+    const response = await import_axios.default.get(`https://api.xposedornot.com/v1/check-email/${email}`, {
+      timeout: 15e3,
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*"
+      }
+    });
+    if (response.data && response.data.breaches) {
+      results.breaches = response.data.breaches;
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+    } else {
+      const statusCode = error.response ? error.response.status : error.code === "ECONNABORTED" ? 408 : 500;
+      const errorDetails = error.message || "Unknown error";
+      console.error("XposedOrNot Error:", errorDetails);
+      return res.status(statusCode).json({
+        error: statusCode === 408 ? "Waktu pencarian habis. Server sumber terlalu lama merespon." : statusCode === 403 ? "Akses diblokir oleh sistem anti-bot tujuan. Coba server berbeda." : `Gagal memproses permintaan pelacakan (Status ${statusCode}).`
+      });
+    }
+  }
+  res.json(results);
 });
 if (process.env.NODE_ENV === "development") {
   import("vite").then(({ createServer: createViteServer }) => {

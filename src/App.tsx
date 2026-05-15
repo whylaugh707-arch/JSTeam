@@ -19,7 +19,8 @@ import {
   Fingerprint,
   SearchCode,
   MessageSquare,
-  Car
+  Car,
+  Mail
 } from 'lucide-react';
 import UsernameSearch from './components/UsernameSearch';
 import IPSearch from './components/IPSearch';
@@ -29,10 +30,11 @@ import GoogleDorker from './components/GoogleDorker';
 import VehicleSearch from './components/VehicleSearch';
 import NikSearch from './components/NikSearch';
 import SocialIntelligence from './components/SocialIntelligence';
+import EmailSearch from './components/EmailSearch';
 import About from './components/About';
 import { cn } from './lib/utils';
 
-type Tab = 'username' | 'ip' | 'network' | 'metadata' | 'dorker' | 'vehicle' | 'nik' | 'social' | 'about';
+type Tab = 'username' | 'email' | 'ip' | 'network' | 'metadata' | 'dorker' | 'vehicle' | 'nik' | 'social' | 'about';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('username');
@@ -82,6 +84,7 @@ export default function App() {
   const tabs = [
     { id: 'username', label: 'Cek Username', icon: Search },
     { id: 'social', label: 'Intel Sosmed', icon: MessageSquare },
+    { id: 'email', label: 'Lacak Email', icon: Mail },
     { id: 'ip', label: 'Lacak IP', icon: MapPin },
     { id: 'network', label: 'Info Domain', icon: Globe },
     { id: 'metadata', label: 'Cek Metadata', icon: ImageIcon },
@@ -202,6 +205,7 @@ export default function App() {
             transition={{ duration: 0.3 }}
           >
             {activeTab === 'username' && <UsernameSearch />}
+            {activeTab === 'email' && <EmailSearch />}
             {activeTab === 'ip' && <IPSearch />}
             {activeTab === 'network' && <NetworkTools />}
             {activeTab === 'metadata' && <MetadataSearch />}
