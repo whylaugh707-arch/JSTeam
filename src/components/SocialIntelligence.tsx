@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Search, Loader2, MessageSquare, Instagram, ExternalLink, ShieldAlert, AtSign } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 const SocialIntelligence: React.FC = () => {
   const [target, setTarget] = useState("");
@@ -43,12 +43,9 @@ const SocialIntelligence: React.FC = () => {
 
   return (
     <div className="space-y-8 sm:space-y-12">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">Social Discovery</p>
-          <h2>Intel Sosmed</h2>
-        </div>
-        <div className="hidden sm:flex status-pill">Indexed traces</div>
+      <div className="text-center">
+        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">Intel Sosmed</h2>
+        <p className="text-[10px] text-gray-500 mt-2 font-mono uppercase tracking-widest">Tracking Comment & Interaction History</p>
       </div>
 
       <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-0 group">

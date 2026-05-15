@@ -1,12 +1,12 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.jstosint.app',
-  appName: 'JST-OSINT V.1',
+  appId: 'com.whylaugh404.app',
+  appName: 'WhyLaugh404',
   webDir: 'dist',
   server: {
     androidScheme: 'https',
-    cleartext: false
+    cleartext: true
   }
 };
 

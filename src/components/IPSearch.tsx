@@ -30,12 +30,8 @@ export default function IPSearch() {
 
   return (
     <div className="space-y-8 sm:space-y-12">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">Network Location</p>
-          <h2>Intel Geografis</h2>
-        </div>
-        <div className="hidden sm:flex status-pill">IP API + Fallback</div>
+      <div className="text-center">
+        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">Intel Geografis</h2>
       </div>
 
       <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-0">

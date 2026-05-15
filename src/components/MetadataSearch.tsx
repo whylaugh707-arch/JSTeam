@@ -40,7 +40,8 @@ export default function MetadataSearch() {
     }
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = (useDropzone as any)({
+  // @ts-expect-error: Dropzone types conflict
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { 'image/*': [] },
     multiple: false
@@ -48,12 +49,8 @@ export default function MetadataSearch() {
 
   return (
     <div className="space-y-8 sm:space-y-12">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">Local File Analysis</p>
-          <h2>Forensik Digital</h2>
-        </div>
-        <div className="hidden sm:flex status-pill">On-device EXIF</div>
+      <div className="text-center">
+        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">Forensik Digital</h2>
       </div>
 
       <div 

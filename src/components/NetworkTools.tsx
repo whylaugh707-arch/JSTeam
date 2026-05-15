@@ -51,12 +51,8 @@ export default function NetworkTools() {
 
   return (
     <div className="space-y-8 sm:space-y-12">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">Domain Intelligence</p>
-          <h2>Arsitektur Root</h2>
-        </div>
-        <div className="hidden sm:flex status-pill">DNS + RDAP</div>
+      <div className="text-center">
+        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">Arsitektur Root</h2>
       </div>
 
       <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-0">

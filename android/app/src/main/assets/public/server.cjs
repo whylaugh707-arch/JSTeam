@@ -1,106 +1,117 @@
-import express from "express";
-import path from "path";
-import axios from "axios";
-import dns from "dns";
-import cors from "cors";
-import { promisify } from "util";
-import crypto from "crypto";
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-const resolveAny = promisify(dns.resolveAny);
-
-const app = express();
-const PORT = 3000;
-
-app.use(express.json());
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+// api/index.ts
+var index_exports = {};
+__export(index_exports, {
+  default: () => index_default
+});
+module.exports = __toCommonJS(index_exports);
+var import_express = __toESM(require("express"), 1);
+var import_path = __toESM(require("path"), 1);
+var import_axios = __toESM(require("axios"), 1);
+var import_dns = __toESM(require("dns"), 1);
+var import_cors = __toESM(require("cors"), 1);
+var import_util = require("util");
+var import_crypto = __toESM(require("crypto"), 1);
+var resolveAny = (0, import_util.promisify)(import_dns.default.resolveAny);
+var app = (0, import_express.default)();
+var PORT = 3e3;
+app.use(import_express.default.json());
+app.use((0, import_cors.default)({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
-
 app.use((req, res, next) => {
   console.log(`[DEBUG] Backend received: ${req.method} ${req.url}`);
   next();
 });
-
-// API Routes
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
-
-// Username Search
 app.post("/api/osint/username", async (req, res) => {
   const { username } = req.body;
   if (!username) return res.status(400).json({ error: "Username is required" });
-
   const sites = [
-    { 
-      name: "Instagram", 
-      url: `https://www.instagram.com/${username}/`, 
-      type: "custom", 
-      check: (res: any, content: string, finalUrl: string) => 
-        res.status === 200 && 
-        !content.includes("page not found") && 
-        !content.includes("halaman ini tidak tersedia") && 
-        !finalUrl.includes("login")
-    },
-    { 
-      name: "TikTok", 
-      url: `https://www.tiktok.com/@${username}`, 
-      type: "custom", 
-      check: (res: any, content: string) => 
-        (res.status === 200 || res.status === 301 || res.status === 302) && 
-        !content.includes("couldn't find this account") && 
-        !content.includes("404")
-    },
-    { 
-      name: "Twitter (X)", 
-      url: `https://twitter.com/${username}`, 
-      type: "custom", 
-      check: (res: any, content: string, finalUrl: string) => 
-        (res.status === 200 && !content.includes("this account doesn’t exist")) || 
-        finalUrl.includes(username) 
-    },
-    { 
-      name: "Facebook", 
-      url: `https://www.facebook.com/${username}`, 
-      type: "custom", 
-      check: (res: any, content: string, finalUrl: string) => 
-        res.status === 200 && !content.includes("This page isn't available") && !finalUrl.includes("login")
-    },
-    { 
-      name: "YouTube", 
-      url: `https://www.youtube.com/@${username}`, 
+    {
+      name: "Instagram",
+      url: `https://www.instagram.com/${username}/`,
       type: "custom",
-      check: (res: any, content: string) => 
-        res.status === 200 && !content.includes("404 Not Found") && !content.includes("This page isn't available")
+      check: (res2, content, finalUrl) => res2.status === 200 && !content.includes("page not found") && !content.includes("halaman ini tidak tersedia") && !finalUrl.includes("login")
+    },
+    {
+      name: "TikTok",
+      url: `https://www.tiktok.com/@${username}`,
+      type: "custom",
+      check: (res2, content) => (res2.status === 200 || res2.status === 301 || res2.status === 302) && !content.includes("couldn't find this account") && !content.includes("404")
+    },
+    {
+      name: "Twitter (X)",
+      url: `https://twitter.com/${username}`,
+      type: "custom",
+      check: (res2, content, finalUrl) => res2.status === 200 && !content.includes("this account doesn\u2019t exist") || finalUrl.includes(username)
+    },
+    {
+      name: "Facebook",
+      url: `https://www.facebook.com/${username}`,
+      type: "custom",
+      check: (res2, content, finalUrl) => res2.status === 200 && !content.includes("This page isn't available") && !finalUrl.includes("login")
+    },
+    {
+      name: "YouTube",
+      url: `https://www.youtube.com/@${username}`,
+      type: "custom",
+      check: (res2, content) => res2.status === 200 && !content.includes("This page isn't available") && !content.includes("404")
     },
     { name: "GitHub", url: `https://github.com/${username}`, type: "status" },
-    { 
-      name: "Telegram", 
-      url: `https://t.me/${username}`, 
-      type: "custom", 
-      check: (res: any, content: string) => 
-        res.status === 200 && !content.includes('<meta property="og:title" content="Telegram: Contact">')
+    {
+      name: "Telegram",
+      url: `https://t.me/${username}`,
+      type: "custom",
+      check: (res2, content) => res2.status === 200 && !content.includes('<meta property="og:title" content="Telegram: Contact">')
     },
     { name: "Reddit", url: `https://www.reddit.com/user/${username}/about.json`, type: "json" },
     { name: "Pinterest", url: `https://www.pinterest.com/${username}/`, type: "status" },
     { name: "Spotify", url: `https://open.spotify.com/user/${username}`, type: "status" },
     { name: "SoundCloud", url: `https://soundcloud.com/${username}`, type: "status" },
     { name: "Quora", url: `https://www.quora.com/profile/${username}`, type: "status" },
-    { 
-      name: "LinkedIn", 
-      url: `https://www.linkedin.com/in/${username}/`, 
-      type: "custom", 
-      check: (res: any, content: string, finalUrl: string) => 
-        res.status === 200 && !finalUrl.includes("authwall") && !finalUrl.includes("login")
+    {
+      name: "LinkedIn",
+      url: `https://www.linkedin.com/in/${username}/`,
+      type: "custom",
+      check: (res2, content, finalUrl) => res2.status === 200 && !finalUrl.includes("authwall") && !finalUrl.includes("login")
     },
-    { 
-      name: "Twitch", 
-      url: `https://www.twitch.tv/${username}`, 
-      type: "custom", 
-      check: (res: any, content: string) => 
-        res.status === 200 && content.includes(`"${username}"`)
+    {
+      name: "Twitch",
+      url: `https://www.twitch.tv/${username}`,
+      type: "custom",
+      check: (res2, content) => res2.status === 200 && content.includes(`"${username}"`)
     },
     { name: "Wikipedia", url: `https://en.wikipedia.org/wiki/User:${username}`, type: "status" },
     { name: "Snapchat", url: `https://www.snapchat.com/add/${username}`, type: "status" },
@@ -115,26 +126,24 @@ app.post("/api/osint/username", async (req, res) => {
     { name: "WordPress", url: `https://${username}.wordpress.com/`, type: "status" },
     { name: "Blogger", url: `https://${username}.blogspot.com/`, type: "status" },
     { name: "Tumblr", url: `https://${username}.tumblr.com/`, type: "status" },
-    { 
-      name: "Tokopedia", 
-      url: `https://www.tokopedia.com/${username}`, 
-      type: "status" 
+    {
+      name: "Tokopedia",
+      url: `https://www.tokopedia.com/${username}`,
+      type: "status"
     },
     { name: "Bukalapak", url: `https://www.bukalapak.com/u/${username}`, type: "status" },
-    { 
-      name: "Kaskus", 
-      url: `https://www.kaskus.co.id/profile/${username}`, 
-      type: "custom", 
-      check: (res: any, content: string) => 
-        res.status === 200 && !content.includes("halaman tidak ditemukan") && !content.includes("Not Found")
+    {
+      name: "Kaskus",
+      url: `https://www.kaskus.co.id/profile/${username}`,
+      type: "custom",
+      check: (res2, content) => res2.status === 200 && !content.includes("halaman tidak ditemukan") && !content.includes("Not Found")
     },
     { name: "GitLab", url: `https://gitlab.com/${username}`, type: "status" },
-    { 
-      name: "Steam", 
-      url: `https://steamcommunity.com/id/${username}`, 
-      type: "custom", 
-      check: (res: any, content: string) => 
-        res.status === 200 && !content.includes("The specified profile could not be found")
+    {
+      name: "Steam",
+      url: `https://steamcommunity.com/id/${username}`,
+      type: "custom",
+      check: (res2, content) => res2.status === 200 && !content.includes("The specified profile could not be found")
     },
     { name: "MyAnimeList", url: `https://myanimelist.net/profile/${username}`, type: "status" },
     { name: "Last.fm", url: `https://www.last.fm/user/${username}`, type: "status" },
@@ -145,33 +154,29 @@ app.post("/api/osint/username", async (req, res) => {
     { name: "Fiverr", url: `https://www.fiverr.com/${username}`, type: "status" },
     { name: "Flickr", url: `https://www.flickr.com/people/${username}/`, type: "status" }
   ];
-
-  const scan = async (site: any) => {
+  const scan = async (site) => {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); 
-
-      const response = await axios.get(site.url, { 
+      const timeoutId = setTimeout(() => controller.abort(), 1e4);
+      const response = await import_axios.default.get(site.url, {
         signal: controller.signal,
-        headers: { 
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.5',
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+          "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.5"
         },
         maxRedirects: 5,
-        validateStatus: (status) => status < 500 // Handle 404s cleanly instead of throwing
+        validateStatus: (status) => status < 500
+        // Handle 404s cleanly instead of throwing
       });
       clearTimeout(timeoutId);
-
       let exists = false;
       const content = String(response.data);
       const finalUrl = response.request?.res?.responseUrl ? response.request.res.responseUrl.toString() : site.url;
-
       if (site.type === "status") {
         exists = response.status === 200;
-        // Generic redirect check for status checks: if it redirects to a generic login or home page, it's likely not found
         if (exists && finalUrl !== site.url && !finalUrl.toLowerCase().includes(username.toLowerCase())) {
-           exists = false;
+          exists = false;
         }
       } else if (site.type === "json") {
         exists = response.status === 200 && !response.data?.error;
@@ -180,28 +185,21 @@ app.post("/api/osint/username", async (req, res) => {
       } else if (site.type === "custom") {
         exists = site.check(response, content, finalUrl);
       }
-
       return { name: site.name, url: site.url, exists };
-    } catch (error: any) {
-      // Return false instead of throwing so Promise.all completes
+    } catch (error) {
       return { name: site.name, url: site.url, exists: false };
     }
   };
-
   const results = await Promise.all(sites.map(scan));
   res.json(results);
 });
-
-// IP Geolocation
 app.get("/api/osint/ip/:ip", async (req, res) => {
   const { ip } = req.params;
   try {
-    const response = await axios.get(`https://ipapi.co/${ip}/json/`, { timeout: 5000 });
-    
+    const response = await import_axios.default.get(`https://ipapi.co/${ip}/json/`, { timeout: 5e3 });
     if (response.data.error) {
       throw new Error(response.data.reason || "IP resolution failed");
     }
-
     const data = {
       ip: response.data.ip,
       city: response.data.city,
@@ -214,9 +212,9 @@ app.get("/api/osint/ip/:ip", async (req, res) => {
       postal: response.data.postal
     };
     res.json(data);
-  } catch (error: any) {
+  } catch (error) {
     try {
-      const response = await axios.get(`http://ip-api.com/json/${ip}`, { timeout: 3000 });
+      const response = await import_axios.default.get(`http://ip-api.com/json/${ip}`, { timeout: 3e3 });
       const data = {
         ip: response.data.query,
         city: response.data.city,
@@ -234,22 +232,20 @@ app.get("/api/osint/ip/:ip", async (req, res) => {
     }
   }
 });
-
-// DNS Lookup
 app.get("/api/osint/dns/:domain", async (req, res) => {
   const { domain } = req.params;
   try {
-    const types: (keyof typeof dns)[] = ["resolve4", "resolve6", "resolveMx", "resolveTxt", "resolveNs", "resolveCname"];
+    const types = ["resolve4", "resolve6", "resolveMx", "resolveTxt", "resolveNs", "resolveCname"];
     const results = await Promise.all(
       types.map(async (type) => {
         try {
-          const resolver = promisify(dns[type] as any);
+          const resolver = (0, import_util.promisify)(import_dns.default[type]);
           const data = await resolver(domain);
           const typeLabel = type.replace("resolve", "").toUpperCase();
           if (Array.isArray(data)) {
-            return data.map((val: any) => ({
+            return data.map((val) => ({
               type: typeLabel === "4" ? "A" : typeLabel === "6" ? "AAAA" : typeLabel,
-              value: typeof val === 'string' ? val : JSON.stringify(val)
+              value: typeof val === "string" ? val : JSON.stringify(val)
             }));
           }
           return [];
@@ -258,21 +254,17 @@ app.get("/api/osint/dns/:domain", async (req, res) => {
         }
       })
     );
-    
     const flatResults = results.flat();
     if (flatResults.length === 0) {
-      const lookup = promisify(dns.lookup);
+      const lookup = (0, import_util.promisify)(import_dns.default.lookup);
       const { address } = await lookup(domain);
-      return res.json([{ type: 'A', value: address }]);
+      return res.json([{ type: "A", value: address }]);
     }
-
     res.json(flatResults);
   } catch (error) {
     res.status(500).json({ error: "DNS_UNRESOLVABLE_OR_TIMEOUT" });
   }
 });
-
-// WHOIS
 app.get("/api/osint/whois/:domain", async (req, res) => {
   const { domain } = req.params;
   try {
@@ -280,10 +272,9 @@ app.get("/api/osint/whois/:domain", async (req, res) => {
       `https://rdap.org/domain/${domain}`,
       `https://whoisjs.com/api/v1/whois?domain=${domain}`
     ];
-
     for (const url of providers) {
       try {
-        const response = await axios.get(url, { timeout: 15000 });
+        const response = await import_axios.default.get(url, { timeout: 15e3 });
         if (response.data && Object.keys(response.data).length > 0) {
           return res.json(response.data);
         }
@@ -291,95 +282,75 @@ app.get("/api/osint/whois/:domain", async (req, res) => {
         continue;
       }
     }
-    
     res.status(500).json({ error: "REGISTRY_TIMEOUT_OR_BLOCKED" });
   } catch (error) {
     res.status(500).json({ error: "REGISTRY_TIMEOUT_OR_BLOCKED" });
   }
 });
-
-// Email Search using XposedOrNot and Gravatar
 app.get("/api/osint/email/:email", async (req, res) => {
   const { email } = req.params;
   const results = {
     breaches: [],
     gravatar: null
   };
-
   try {
-    // 1. Check Gravatar
-    const emailHash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
+    const emailHash = import_crypto.default.createHash("md5").update(email.toLowerCase().trim()).digest("hex");
     try {
-      const gravatarResponse = await axios.get(`https://en.gravatar.com/${emailHash}.json`, {
-        headers: { 'User-Agent': 'Mozilla/5.0' },
-        timeout: 5000
+      const gravatarResponse = await import_axios.default.get(`https://en.gravatar.com/${emailHash}.json`, {
+        headers: { "User-Agent": "Mozilla/5.0" },
+        timeout: 5e3
       });
       if (gravatarResponse.data && gravatarResponse.data.entry && gravatarResponse.data.entry.length > 0) {
         results.gravatar = gravatarResponse.data.entry[0];
       }
-    } catch (gErr: any) {
-      // 404 means no gravatar found, ignore other errors
+    } catch (gErr) {
     }
-
-    // 2. Check XposedOrNot
-    const response = await axios.get(`https://api.xposedornot.com/v1/check-email/${email}`, { 
-      timeout: 15000,
+    const response = await import_axios.default.get(`https://api.xposedornot.com/v1/check-email/${email}`, {
+      timeout: 15e3,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-        'Accept': 'application/json, text/plain, */*'
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*"
       }
     });
-    
     if (response.data && response.data.breaches) {
-       results.breaches = response.data.breaches;
+      results.breaches = response.data.breaches;
     }
-  } catch (error: any) {
+  } catch (error) {
     if (error.response && error.response.status === 404) {
-      // 404 means no breaches found
     } else {
-      const statusCode = error.response ? error.response.status : (error.code === 'ECONNABORTED' ? 408 : 500);
+      const statusCode = error.response ? error.response.status : error.code === "ECONNABORTED" ? 408 : 500;
       const errorDetails = error.message || "Unknown error";
       console.error("XposedOrNot Error:", errorDetails);
-      
-      return res.status(statusCode).json({ 
-        error: statusCode === 408 
-          ? "Waktu pencarian habis. Server sumber terlalu lama merespon." 
-          : statusCode === 403 
-          ? "Akses diblokir oleh sistem anti-bot tujuan. Coba server berbeda."
-          : `Gagal memproses permintaan pelacakan (Status ${statusCode}).`
+      return res.status(statusCode).json({
+        error: statusCode === 408 ? "Waktu pencarian habis. Server sumber terlalu lama merespon." : statusCode === 403 ? "Akses diblokir oleh sistem anti-bot tujuan. Coba server berbeda." : `Gagal memproses permintaan pelacakan (Status ${statusCode}).`
       });
     }
   }
-  
   res.json(results);
 });
-
-// Vite middleware for development
 if (process.env.NODE_ENV === "development") {
   import("vite").then(({ createServer: createViteServer }) => {
     createViteServer({
       server: { middlewareMode: true },
-      appType: "spa",
+      appType: "spa"
     }).then((vite) => {
       app.use(vite.middlewares);
     });
   });
 } else {
-  const distPath = path.join(process.cwd(), "dist");
-  app.use(express.static(distPath));
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
+  const distPath = import_path.default.join(process.cwd(), "dist");
+  app.use(import_express.default.static(distPath));
+  app.get("/", (req, res) => {
+    res.sendFile(import_path.default.join(distPath, "index.html"));
   });
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
+  app.get("*", (req, res) => {
+    res.sendFile(import_path.default.join(distPath, "index.html"));
   });
 }
-
-// Start server (outside Vercel)
 if (!process.env.VERCEL) {
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }
-
-export default app;
+var index_default = app;
+//# sourceMappingURL=server.cjs.map

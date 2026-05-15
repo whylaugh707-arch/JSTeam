@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Search, ExternalLink, ShieldAlert, FileCode, Database, Key, HardDrive, Terminal as TerminalIcon, Copy, Check } from 'lucide-react';
+import { cn } from '../lib/utils';
 
 interface DorkCategory {
   id: string;
@@ -84,29 +85,74 @@ const dorkCategories: DorkCategory[] = [
 const GoogleDorker: React.FC = () => {
   const [target, setTarget] = useState('');
   const [copiedIndex, setCopiedIndex] = useState<{cat: string, idx: number} | null>(null);
+  const [trollMode, setTrollMode] = useState(false);
+
+  const BANNED_TARGETS = [
+    'fryzzie', 'izie', 'jeexmiekko', 'whylaugh404', 'whylaugh707', 'm. fryzzie al ashafani'
+  ];
 
   const handleCopy = (text: string, cat: string, idx: number) => {
+    if (BANNED_TARGETS.some(t => target.toLowerCase().includes(t))) {
+      setTrollMode(true);
+      return;
+    }
     navigator.clipboard.writeText(text);
     setCopiedIndex({ cat, idx });
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
   const handleOpen = (query: string) => {
+    if (BANNED_TARGETS.some(t => target.toLowerCase().includes(t))) {
+      setTrollMode(true);
+      return;
+    }
     const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
     window.open(url, '_blank');
   };
 
   return (
-    <div className="space-y-8 sm:space-y-10">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">Search Operators</p>
-          <h2>Google Dorking</h2>
-        </div>
-        <div className="hidden sm:flex status-pill">
-          <ShieldAlert className="size-4" />
-          Public index only
-        </div>
+    <div className={cn("space-y-8 sm:space-y-12 transition-all duration-1000", trollMode && "blur-lg fixed inset-0 opacity-20 pointer-events-none overflow-hidden")}>
+      <AnimatePresence>
+        {trollMode && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-black/95 select-none pointer-events-auto"
+          >
+            <div className="relative group overflow-hidden border-[6px] border-cyber-red p-8 sm:p-12 bg-white flex flex-col items-center gap-6 sm:gap-8 max-w-lg w-full">
+              <div className="absolute top-0 left-0 w-full h-1 bg-cyber-red animate-pulse" />
+              <div className="text-[80px] sm:text-[120px] leading-none animate-bounce">🤡</div>
+              <h1 className="text-3xl sm:text-5xl font-black text-black text-center uppercase tracking-tighter mix-blend-difference">
+                STOP SEARCHING FOR <span className="text-cyber-red">LOSERS</span>
+              </h1>
+              <div className="text-center space-y-4">
+                <p className="text-sm sm:text-xl font-mono font-black text-black leading-tight">
+                  "WE FOUND NOTHING BUT A SMELLY PILE OF TRASH. THIS PERSON HAS THE CHARISMA OF A ROTTEN POTATO AND THE INTELLIGENCE OF A BROKEN TOASTER."
+                </p>
+                <div className="p-3 bg-cyber-red text-white font-mono text-[10px] font-bold">
+                  DORK_STATUS: F*CK_OFF_AND_DIE
+                </div>
+              </div>
+              <button 
+                onClick={() => window.location.reload()}
+                className="w-full py-4 sm:py-6 bg-black text-white text-xl sm:text-2xl font-black italic hover:bg-neutral-800 transition-colors"
+              >
+                I AM A CLOWN
+              </button>
+            </div>
+            <div className="mt-12 grid grid-cols-4 gap-4 opacity-50">
+               {[...Array(16)].map((_, i) => (
+                 <div key={i} className="size-4 bg-cyber-red animate-ping" />
+               ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="text-center">
+        <h2 className="text-2xl sm:text-4xl font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">
+          {trollMode ? "TOTAL_SYSTEM_DISASTER" : "Google Dorking"}
+        </h2>
       </div>
 
       <div className="max-w-3xl mx-auto">
@@ -114,60 +160,63 @@ const GoogleDorker: React.FC = () => {
           <input
             type="text"
             value={target}
-            onChange={(e) => setTarget(e.target.value.trimStart())}
-            placeholder="DOMAIN_ATAU_NAMA_TARGET..."
+            onChange={(e) => setTarget(e.target.value)}
+            placeholder="DOMAIN_ATAU_NAMA_TARGET (e.g., target.com atau Nama Seseorang)..."
             className="tactical-input !pr-12"
           />
           <TerminalIcon className="absolute right-4 top-1/2 -translate-y-1/2 size-5 text-cyber-red/30 group-focus-within:text-cyber-red transition-colors" />
         </div>
+        <p className="mt-3 font-mono text-[9px] text-gray-600 uppercase tracking-widest text-center">
+          MASUKKAN_TARGET_UNTUK_GENERASI_OTOMATIS_QUERY_DORKING
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {dorkCategories.map((category) => (
           <motion.div
             key={category.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="tactical-card space-y-5"
+            className="tactical-card space-y-6"
           >
             <div className="flex items-center gap-4 border-b border-cyber-border pb-4">
-              <div className="tool-icon">
+              <div className="p-2 bg-cyber-red/5 border border-cyber-red/20">
                 <category.icon className="size-5 text-cyber-red" />
               </div>
-              <h3 className="text-lg font-sans font-bold uppercase tracking-widest text-white">
+              <h3 className="text-xl font-sans font-bold uppercase tracking-widest text-white">
                 {category.name}
               </h3>
             </div>
 
             <div className="space-y-3">
               {category.queries.map((q, idx) => {
-                const queryText = q.query(target.trim() || "example.com");
+                const queryText = q.query(target || "example.com");
                 const isCopied = copiedIndex?.cat === category.id && copiedIndex?.idx === idx;
                 
                 return (
-                  <div key={idx} className="query-row group">
-                    <div className="flex justify-between items-center gap-3">
-                      <span className="font-mono text-[10px] text-cyber-red uppercase tracking-widest">{q.label}</span>
-                      <div className="flex gap-2 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => handleCopy(queryText, category.id, idx)}
-                          className="icon-btn text-cyber-red"
-                          aria-label="Copy query"
-                        >
-                          {isCopied ? <Check className="size-3" /> : <Copy className="size-3" />}
-                        </button>
-                        <button
-                          onClick={() => handleOpen(queryText)}
-                          className="icon-btn text-white"
-                          aria-label="Open query"
-                        >
-                          <ExternalLink className="size-3" />
-                        </button>
+                  <div key={idx} className="group relative">
+                    <div className="flex flex-col gap-2 p-4 bg-black/40 border border-cyber-border transition-all group-hover:border-cyber-red/30 group-hover:bg-black/60">
+                      <div className="flex justify-between items-center">
+                        <span className="font-mono text-[10px] text-cyber-red uppercase tracking-widest">{q.label}</span>
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => handleCopy(queryText, category.id, idx)}
+                            className="p-1.5 hover:bg-cyber-red/10 border border-transparent hover:border-cyber-red/20 text-cyber-red"
+                          >
+                            {isCopied ? <Check className="size-3" /> : <Copy className="size-3" />}
+                          </button>
+                          <button
+                            onClick={() => handleOpen(queryText)}
+                            className="p-1.5 hover:bg-white/10 border border-transparent hover:border-white/20 text-white"
+                          >
+                            <ExternalLink className="size-3" />
+                          </button>
+                        </div>
                       </div>
+                      <code className="font-mono text-[10px] sm:text-xs text-gray-500 break-all whitespace-pre-wrap select-all selection:bg-cyber-red selection:text-white">
+                        {queryText}
+                      </code>
                     </div>
-                    <code className="font-mono text-[10px] sm:text-xs text-gray-400 break-all whitespace-pre-wrap select-all selection:bg-cyber-red selection:text-white">
-                      {queryText}
-                    </code>
                   </div>
                 );
               })}
@@ -175,6 +224,7 @@ const GoogleDorker: React.FC = () => {
           </motion.div>
         ))}
       </div>
+
     </div>
   );
 };
