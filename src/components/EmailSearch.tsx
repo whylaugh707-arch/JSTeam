@@ -34,7 +34,7 @@ export default function EmailSearch() {
     setHasSearched(false);
 
     try {
-      const response = await axios.get(`${getApiBaseUrl()}/api/osint/email/${email}`);
+      const response = await axios.get(`${getApiBaseUrl()}/api/osint/email/${encodeURIComponent(email.trim())}`);
       
       if (response.data) {
         if (response.data.breaches) {
@@ -61,14 +61,15 @@ export default function EmailSearch() {
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
-        <h2 className="text-2xl font-mono font-bold uppercase tracking-widest text-white flex items-center gap-3">
-          <Mail className="size-6 text-cyber-red" />
-          Pelacakan Email
-        </h2>
-        <p className="font-mono text-sm text-gray-500 uppercase tracking-widest">
-          Melacak keberadaan email dari jejak digital pendaftaran dan kebocoran data.
-        </p>
+      <div className="section-heading">
+        <div>
+          <p className="eyebrow">Breach + Identity Signals</p>
+          <h2 className="flex items-center gap-3">
+            <Mail className="size-6 text-cyber-red" />
+            Pelacakan Email
+          </h2>
+        </div>
+        <div className="hidden sm:flex status-pill">XposedOrNot + Gravatar</div>
       </div>
 
       <div className="bg-black/50 border border-cyber-border p-6 mt-8">

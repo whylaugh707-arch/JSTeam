@@ -18,9 +18,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build Web
-        run: VITE_API_URL=https://ais-pre-faum33tc7svfhqeq3algvf-125749415297.asia-southeast1.run.app npm run build
+        run: VITE_API_URL=https://jsteam-production-8f09.up.railway.app npm run build:mobile
       - name: Add Android Platform
         run: |
           if [ ! -d "android" ]; then
@@ -34,9 +34,14 @@ jobs:
           gradle-version: '8.13'
           validate-wrappers: false
       - name: Build APK
-        run: cd android && gradle assembleDebug
-      - name: Upload APK
+        run: cd android && ./gradlew assembleRelease assembleDebug
+      - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
+          name: app-release-unsigned
+          path: android/app/build/outputs/apk/release/app-release-unsigned.apk
+      - name: Upload installable debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-installable
           path: android/app/build/outputs/apk/debug/app-debug.apk

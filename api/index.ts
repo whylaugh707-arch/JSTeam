@@ -6,20 +6,119 @@ import cors from "cors";
 import { promisify } from "util";
 import crypto from "crypto";
 
-const resolveAny = promisify(dns.resolveAny);
-
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT || 3000);
+const DEFAULT_ALLOWED_ORIGINS = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "capacitor://localhost",
+  "https://localhost",
+  "https://jsteam-production-8f09.up.railway.app"
+];
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || DEFAULT_ALLOWED_ORIGINS.join(","))
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+type CacheEntry = {
+  expiresAt: number;
+  payload: unknown;
+};
+
+const cache = new Map<string, CacheEntry>();
+const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
+
+const normalizeCacheKey = (value: string) => value.toLowerCase().trim();
+const cacheGet = <T>(key: string): T | null => {
+  const entry = cache.get(key);
+  if (!entry) return null;
+  if (entry.expiresAt < Date.now()) {
+    cache.delete(key);
+    return null;
+  }
+  return entry.payload as T;
+};
+const cacheSet = (key: string, payload: unknown, ttlMs = 10 * 60 * 1000) => {
+  cache.set(key, { payload, expiresAt: Date.now() + ttlMs });
+};
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of cache.entries()) {
+    if (entry.expiresAt < now) cache.delete(key);
+  }
+  for (const [key, bucket] of rateLimitBuckets.entries()) {
+    if (bucket.resetAt < now) rateLimitBuckets.delete(key);
+  }
+}, 5 * 60 * 1000).unref();
+
+const isValidDomain = (domain: string) =>
+  /^(?=.{1,253}$)(?!-)(?:[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63}$/.test(domain.trim());
+
+const isValidIP = (ip: string) =>
+  /^(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)$/.test(ip.trim()) ||
+  /^[a-fA-F0-9:]{2,39}$/.test(ip.trim());
+
+const isValidUsername = (username: string) =>
+  /^[a-zA-Z0-9._-]{2,40}$/.test(username.trim());
+
+const isValidEmail = (email: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim()) && email.length <= 254;
+
+const limitConcurrency = async <T, R>(
+  items: T[],
+  limit: number,
+  worker: (item: T) => Promise<R>
+) => {
+  const results: R[] = [];
+  let cursor = 0;
+
+  const runners = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (cursor < items.length) {
+      const current = cursor++;
+      results[current] = await worker(items[current]);
+    }
+  });
+
+  await Promise.all(runners);
+  return results;
+};
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  const ip = req.ip || req.socket.remoteAddress || "unknown";
+  const now = Date.now();
+  const windowMs = 60 * 1000;
+  const maxRequests = 90;
+  const bucket = rateLimitBuckets.get(ip) || { count: 0, resetAt: now + windowMs };
+
+  if (bucket.resetAt < now) {
+    bucket.count = 0;
+    bucket.resetAt = now + windowMs;
+  }
+
+  bucket.count += 1;
+  rateLimitBuckets.set(ip, bucket);
+
+  if (bucket.count > maxRequests) {
+    return res.status(429).json({ error: "RATE_LIMITED" });
+  }
+
+  next();
+});
+
 app.use(cors({
-  origin: '*',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("CORS_BLOCKED"));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use((req, res, next) => {
-  console.log(`[DEBUG] Backend received: ${req.method} ${req.url}`);
+  console.log(`[JST] ${req.method} ${req.url}`);
   next();
 });
 
@@ -30,8 +129,14 @@ app.get("/api/health", (req, res) => {
 
 // Username Search
 app.post("/api/osint/username", async (req, res) => {
-  const { username } = req.body;
-  if (!username) return res.status(400).json({ error: "Username is required" });
+  const username = String(req.body?.username || "").trim();
+  if (!isValidUsername(username)) {
+    return res.status(400).json({ error: "USERNAME_INVALID" });
+  }
+
+  const cacheKey = `username:${normalizeCacheKey(username)}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return res.json(cached);
 
   const sites = [
     { 
@@ -159,7 +264,7 @@ app.post("/api/osint/username", async (req, res) => {
           'Accept-Language': 'en-US,en;q=0.5',
         },
         maxRedirects: 5,
-        validateStatus: (status) => status < 500 // Handle 404s cleanly instead of throwing
+        validateStatus: (status) => status < 500
       });
       clearTimeout(timeoutId);
 
@@ -183,18 +288,26 @@ app.post("/api/osint/username", async (req, res) => {
 
       return { name: site.name, url: site.url, exists };
     } catch (error: any) {
-      // Return false instead of throwing so Promise.all completes
       return { name: site.name, url: site.url, exists: false };
     }
   };
 
-  const results = await Promise.all(sites.map(scan));
+  const results = await limitConcurrency(sites, 8, scan);
+  cacheSet(cacheKey, results, 5 * 60 * 1000);
   res.json(results);
 });
 
 // IP Geolocation
 app.get("/api/osint/ip/:ip", async (req, res) => {
-  const { ip } = req.params;
+  const ip = String(req.params.ip || "").trim();
+  if (!isValidIP(ip)) {
+    return res.status(400).json({ error: "IP_INVALID" });
+  }
+
+  const cacheKey = `ip:${normalizeCacheKey(ip)}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return res.json(cached);
+
   try {
     const response = await axios.get(`https://ipapi.co/${ip}/json/`, { timeout: 5000 });
     
@@ -213,21 +326,23 @@ app.get("/api/osint/ip/:ip", async (req, res) => {
       timezone: response.data.timezone,
       postal: response.data.postal
     };
+    cacheSet(cacheKey, data);
     res.json(data);
   } catch (error: any) {
     try {
-      const response = await axios.get(`http://ip-api.com/json/${ip}`, { timeout: 3000 });
+      const response = await axios.get(`https://ipwho.is/${ip}`, { timeout: 3000 });
       const data = {
-        ip: response.data.query,
+        ip: response.data.ip,
         city: response.data.city,
-        region: response.data.regionName,
+        region: response.data.region,
         country_name: response.data.country,
-        latitude: response.data.lat,
-        longitude: response.data.lon,
-        org: response.data.isp || response.data.org,
-        timezone: response.data.timezone,
-        postal: response.data.zip
+        latitude: response.data.latitude,
+        longitude: response.data.longitude,
+        org: response.data.connection?.isp || response.data.connection?.org,
+        timezone: response.data.timezone?.id || response.data.timezone,
+        postal: response.data.postal
       };
+      cacheSet(cacheKey, data);
       return res.json(data);
     } catch (e) {
       res.status(500).json({ error: "NODE_CONN_TIMEOUT" });
@@ -237,7 +352,15 @@ app.get("/api/osint/ip/:ip", async (req, res) => {
 
 // DNS Lookup
 app.get("/api/osint/dns/:domain", async (req, res) => {
-  const { domain } = req.params;
+  const domain = String(req.params.domain || "").trim().toLowerCase();
+  if (!isValidDomain(domain)) {
+    return res.status(400).json({ error: "DOMAIN_INVALID" });
+  }
+
+  const cacheKey = `dns:${normalizeCacheKey(domain)}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return res.json(cached);
+
   try {
     const types: (keyof typeof dns)[] = ["resolve4", "resolve6", "resolveMx", "resolveTxt", "resolveNs", "resolveCname"];
     const results = await Promise.all(
@@ -263,9 +386,12 @@ app.get("/api/osint/dns/:domain", async (req, res) => {
     if (flatResults.length === 0) {
       const lookup = promisify(dns.lookup);
       const { address } = await lookup(domain);
-      return res.json([{ type: 'A', value: address }]);
+      const fallback = [{ type: 'A', value: address }];
+      cacheSet(cacheKey, fallback);
+      return res.json(fallback);
     }
 
+    cacheSet(cacheKey, flatResults);
     res.json(flatResults);
   } catch (error) {
     res.status(500).json({ error: "DNS_UNRESOLVABLE_OR_TIMEOUT" });
@@ -274,17 +400,26 @@ app.get("/api/osint/dns/:domain", async (req, res) => {
 
 // WHOIS
 app.get("/api/osint/whois/:domain", async (req, res) => {
-  const { domain } = req.params;
+  const domain = String(req.params.domain || "").trim().toLowerCase();
+  if (!isValidDomain(domain)) {
+    return res.status(400).json({ error: "DOMAIN_INVALID" });
+  }
+
+  const cacheKey = `whois:${normalizeCacheKey(domain)}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return res.json(cached);
+
   try {
     const providers = [
-      `https://rdap.org/domain/${domain}`,
-      `https://whoisjs.com/api/v1/whois?domain=${domain}`
+      `https://rdap.org/domain/${encodeURIComponent(domain)}`,
+      `https://whoisjs.com/api/v1/whois?domain=${encodeURIComponent(domain)}`
     ];
 
     for (const url of providers) {
       try {
         const response = await axios.get(url, { timeout: 15000 });
         if (response.data && Object.keys(response.data).length > 0) {
+          cacheSet(cacheKey, response.data, 30 * 60 * 1000);
           return res.json(response.data);
         }
       } catch (e) {
@@ -300,7 +435,15 @@ app.get("/api/osint/whois/:domain", async (req, res) => {
 
 // Email Search using XposedOrNot and Gravatar
 app.get("/api/osint/email/:email", async (req, res) => {
-  const { email } = req.params;
+  const email = String(req.params.email || "").trim().toLowerCase();
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: "EMAIL_INVALID" });
+  }
+
+  const cacheKey = `email:${normalizeCacheKey(email)}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return res.json(cached);
+
   const results = {
     breaches: [],
     gravatar: null
@@ -322,7 +465,7 @@ app.get("/api/osint/email/:email", async (req, res) => {
     }
 
     // 2. Check XposedOrNot
-    const response = await axios.get(`https://api.xposedornot.com/v1/check-email/${email}`, { 
+    const response = await axios.get(`https://api.xposedornot.com/v1/check-email/${encodeURIComponent(email)}`, {
       timeout: 15000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
@@ -351,6 +494,7 @@ app.get("/api/osint/email/:email", async (req, res) => {
     }
   }
   
+  cacheSet(cacheKey, results, 15 * 60 * 1000);
   res.json(results);
 });
 

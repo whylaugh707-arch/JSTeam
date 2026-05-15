@@ -2,16 +2,18 @@ import axios from "axios";
 import { Capacitor } from '@capacitor/core';
 import { UsernameScanResult, IPInfo, DNSRecord, WhoisResult } from "../types";
 
-const PRODUCTION_API_URL = "https://jsteam-production-8f09.up.railway.app";
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
 
 export const getApiBaseUrl = () => {
-  // If running embedded within an iOS/Android physical app, use the fixed production URL
-  if (Capacitor.isNativePlatform()) {
-    return PRODUCTION_API_URL;
+  if (configuredApiUrl) {
+    return configuredApiUrl.replace(/\/$/, "");
   }
-  
-  // If running in development or shared workspace on browser, use relative paths
-  // to reach the backend that served the site (this natively works for both ais-dev and ais-pre).
+
+  // Native shells cannot reach the bundled Node backend. Set VITE_API_URL in release builds.
+  if (Capacitor.isNativePlatform()) {
+    return "https://jsteam-production-8f09.up.railway.app";
+  }
+
   return ""; 
 };
 
@@ -26,16 +28,16 @@ export const scanUsername = async (username: string): Promise<UsernameScanResult
 };
 
 export const getIPInfo = async (ip: string): Promise<IPInfo> => {
-  const response = await axios.get(`${getApiBaseUrl()}/api/osint/ip/${ip}`);
+  const response = await axios.get(`${getApiBaseUrl()}/api/osint/ip/${encodeURIComponent(ip)}`);
   return response.data;
 };
 
 export const getDNSRecords = async (domain: string): Promise<DNSRecord[]> => {
-  const response = await axios.get(`${getApiBaseUrl()}/api/osint/dns/${domain}`);
+  const response = await axios.get(`${getApiBaseUrl()}/api/osint/dns/${encodeURIComponent(domain)}`);
   return response.data;
 };
 
 export const getWhoisInfo = async (domain: string): Promise<WhoisResult> => {
-  const response = await axios.get(`${getApiBaseUrl()}/api/osint/whois/${domain}`);
+  const response = await axios.get(`${getApiBaseUrl()}/api/osint/whois/${encodeURIComponent(domain)}`);
   return response.data;
 };
