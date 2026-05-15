@@ -21,5 +21,5 @@ View your app in AI Studio: https://ai.studio/apps/15ef0bf1-d9f7-4d08-8cb3-cf95f
 
 
 # JST-OSINT V.1 Adalah sebuah Aplikasi Open Source Intelligence yang berjalan dalam ruang lingkup Android.
+Aplikasi ini diharapkan mampu membantu tim administrator dan member Jakartasecteam dalam pencarian data lebih lanjut mengenai sebuah domain, dan identitas individu tertentu
 
-\
