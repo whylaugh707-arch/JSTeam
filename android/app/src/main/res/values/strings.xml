@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">WhyLaugh404</string>
-    <string name="title_activity_main">WhyLaugh404</string>
-    <string name="package_name">com.whylaugh404.app</string>
-    <string name="custom_url_scheme">com.whylaugh404.app</string>
+    <string name="app_name">JST-OSINT V.1</string>
+    <string name="title_activity_main">JST-OSINT V.1</string>
+    <string name="package_name">com.jstosint.app</string>
+    <string name="custom_url_scheme">com.jstosint.app</string>
 </resources>

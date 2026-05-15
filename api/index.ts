@@ -6,6 +6,8 @@ import cors from "cors";
 import { promisify } from "util";
 import crypto from "crypto";
 
+import { initWhatsApp, getBotStatus, resetBot } from "./whatsapp.js";
+
 const resolveAny = promisify(dns.resolveAny);
 
 const app = express();
@@ -26,6 +28,21 @@ app.use((req, res, next) => {
 // API Routes
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
+});
+
+// WhatsApp Bot Routes
+app.get("/api/whatsapp/status", (req, res) => {
+  res.json(getBotStatus());
+});
+
+app.post("/api/whatsapp/start", (req, res) => {
+  initWhatsApp();
+  res.json({ success: true, message: "WhatsApp bot initializing..." });
+});
+
+app.post("/api/whatsapp/reset", (req, res) => {
+  resetBot();
+  res.json({ success: true, message: "WhatsApp bot stopped/reset." });
 });
 
 // Username Search

@@ -17,8 +17,8 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         manifest: {
-          name: 'WhyLaugh404',
-          short_name: 'WhyLaugh',
+          name: 'JST-OSINT V.1',
+          short_name: 'JST-OSINT',
           description: 'Cyber threat intelligence tool',
           theme_color: '#000000',
           background_color: '#000000',

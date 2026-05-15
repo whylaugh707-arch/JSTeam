@@ -20,7 +20,8 @@ import {
   SearchCode,
   MessageSquare,
   Car,
-  Mail
+  Mail,
+  Bot
 } from 'lucide-react';
 import UsernameSearch from './components/UsernameSearch';
 import IPSearch from './components/IPSearch';
@@ -32,9 +33,10 @@ import NikSearch from './components/NikSearch';
 import SocialIntelligence from './components/SocialIntelligence';
 import EmailSearch from './components/EmailSearch';
 import About from './components/About';
+import WhatsappBot from './components/WhatsappBot';
 import { cn } from './lib/utils';
 
-type Tab = 'username' | 'email' | 'ip' | 'network' | 'metadata' | 'dorker' | 'vehicle' | 'nik' | 'social' | 'about';
+type Tab = 'username' | 'email' | 'ip' | 'network' | 'metadata' | 'dorker' | 'vehicle' | 'nik' | 'social' | 'whatsapp' | 'about';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('username');
@@ -91,6 +93,7 @@ export default function App() {
     { id: 'dorker', label: 'Google Dork', icon: SearchCode },
     { id: 'vehicle', label: 'Pelacakan Plat', icon: Car },
     { id: 'nik', label: 'Analisis NIK', icon: Fingerprint },
+    { id: 'whatsapp', label: 'WA Bot', icon: Bot },
     { id: 'about', label: 'Tentang JSTeam', icon: Info },
   ] as const;
 
@@ -213,6 +216,7 @@ export default function App() {
             {activeTab === 'vehicle' && <VehicleSearch />}
             {activeTab === 'nik' && <NikSearch />}
             {activeTab === 'social' && <SocialIntelligence />}
+            {activeTab === 'whatsapp' && <WhatsappBot />}
             {activeTab === 'about' && <About />}
           </motion.div>
         </AnimatePresence>

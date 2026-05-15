@@ -13,7 +13,7 @@ export default function UsernameSearch() {
   const [trollMode, setTrollMode] = useState(false);
 
   const BANNED_TARGETS = [
-    'fryzzie', 'izie', 'jeexmiekko', 'whylaugh404', 'whylaugh707', 'm. fryzzie al ashafani'
+    'none'
   ];
 
   const handleSearch = async (e: React.FormEvent) => {
