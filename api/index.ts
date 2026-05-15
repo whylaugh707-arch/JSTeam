@@ -71,9 +71,7 @@ app.post("/api/osint/username", async (req, res) => {
     { 
       name: "YouTube", 
       url: `https://www.youtube.com/@${username}`, 
-      type: "custom", 
-      check: (res: any, content: string) => 
-        res.status === 200 && !content.includes("This page isn't available") && !content.includes("404")
+      type: "status"
     },
     { name: "GitHub", url: `https://github.com/${username}`, type: "status" },
     { 
