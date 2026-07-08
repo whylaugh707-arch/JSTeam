@@ -6,10 +6,11 @@ import axios from 'axios';
 interface BotStatus {
   status: string;
   qr: string | null;
+  error?: string | null;
 }
 
 export default function WhatsappBot() {
-  const [botStatus, setBotStatus] = useState<BotStatus>({ status: 'DISCONNECTED', qr: null });
+  const [botStatus, setBotStatus] = useState<BotStatus>({ status: 'DISCONNECTED', qr: null, error: null });
   const [loading, setLoading] = useState(false);
 
   const checkStatus = async () => {
@@ -73,10 +74,15 @@ export default function WhatsappBot() {
              <div className="flex flex-col space-y-4 font-mono text-sm border-l-2 border-cyber-border pl-4 py-2">
                <div className="flex justify-between text-gray-400">
                   <span>STATUS KONEKSI:</span>
-                  <span className={`font-bold ${botStatus.status === 'READY' || botStatus.status === 'AUTHENTICATED' ? 'text-green-500' : 'text-yellow-500'}`}>
+                  <span className={`font-bold ${botStatus.status === 'READY' || botStatus.status === 'AUTHENTICATED' ? 'text-green-500' : botStatus.status === 'ERROR' ? 'text-cyber-red' : 'text-yellow-500'}`}>
                     {botStatus.status}
                   </span>
                </div>
+               {botStatus.error && (
+                 <div className="text-xs text-cyber-red border border-cyber-red/30 bg-cyber-red/10 p-2 mt-2">
+                   Error: {botStatus.error}
+                 </div>
+               )}
                <div className="text-xs text-gray-600 block mt-2">
                  *Gunakan tab ini untuk menyiapkan bot OSINT JSTeam pada nomor kosong/virtual.
                </div>
@@ -130,6 +136,11 @@ export default function WhatsappBot() {
                <div className="flex flex-col items-center text-cyber-red">
                   <RefreshCw className="size-10 animate-spin mb-4" />
                   <p className="font-mono text-xs uppercase tracking-[0.2em] animate-pulse">Menyiapkan Engine...</p>
+               </div>
+            ) : botStatus.status === 'ERROR' ? (
+               <div className="flex flex-col items-center text-cyber-red">
+                  <ShieldCheck className="size-16 mb-4 opacity-50" />
+                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-center">Gagal Memulai Engine<br/><span className="text-[10px] text-gray-500 mt-2 block tracking-normal">Periksa ketersediaan Chromium atau perizinan sesi.</span></p>
                </div>
             ) : botStatus.status === 'READY' || botStatus.status === 'AUTHENTICATED' ? (
                <div className="flex flex-col items-center text-green-500">

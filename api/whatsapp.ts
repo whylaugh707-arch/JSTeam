@@ -6,13 +6,15 @@ import qrcode from 'qrcode';
 import axios from 'axios';
 
 let qrCodeDataUrl: string | null = null;
-let botStatus: 'DISCONNECTED' | 'INITIALIZING' | 'QR_READY' | 'AUTHENTICATED' | 'READY' = 'DISCONNECTED';
+let botStatus: 'DISCONNECTED' | 'INITIALIZING' | 'QR_READY' | 'AUTHENTICATED' | 'READY' | 'ERROR' = 'DISCONNECTED';
+let botError: string | null = null;
 let client: ClientType | null = null;
 
 export const initWhatsApp = () => {
   if (client) return;
 
   botStatus = 'INITIALIZING';
+  botError = null;
   client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
@@ -24,30 +26,35 @@ export const initWhatsApp = () => {
   client.on('qr', async (qr) => {
     console.log('[WhatsApp] QR Code received.');
     botStatus = 'QR_READY';
+    botError = null;
     qrCodeDataUrl = await qrcode.toDataURL(qr);
   });
 
   client.on('ready', () => {
     console.log('[WhatsApp] Bot is READY!');
     botStatus = 'READY';
+    botError = null;
     qrCodeDataUrl = null;
   });
 
   client.on('authenticated', () => {
       console.log('[WhatsApp] Authenticated successfully!');
       botStatus = 'AUTHENTICATED';
+      botError = null;
   });
 
   client.on('auth_failure', (msg) => {
       console.error('[WhatsApp] Authentication failure', msg);
-      botStatus = 'DISCONNECTED';
+      botStatus = 'ERROR';
+      botError = 'Authentication Failure: ' + msg;
   });
 
   client.on('disconnected', (reason) => {
       console.log('[WhatsApp] Client was logged out', reason);
       botStatus = 'DISCONNECTED';
+      botError = null;
       if (client) {
-          client.destroy();
+          client.destroy().catch(()=>{});
           client = null;
       }
   });
@@ -103,14 +110,23 @@ export const initWhatsApp = () => {
     }
   });
 
-  client.initialize();
+  client.initialize().catch((err) => {
+    console.error('[WhatsApp] Initialization failed:', err);
+    botStatus = 'ERROR';
+    botError = err instanceof Error ? err.message : String(err);
+    if (client) {
+      client.destroy().catch(() => {});
+      client = null;
+    }
+  });
 };
 
 export const getBotStatus = () => {
-    return { status: botStatus, qr: qrCodeDataUrl };
+    return { status: botStatus, qr: qrCodeDataUrl, error: botError };
 };
 export const resetBot = () => {
     botStatus = 'DISCONNECTED';
+    botError = null;
     qrCodeDataUrl = null;
     if (client) {
         client.destroy();

@@ -371,32 +371,32 @@ app.get("/api/osint/email/:email", async (req, res) => {
   res.json(results);
 });
 
-// Vite middleware for development
-if (process.env.NODE_ENV === "development") {
-  import("vite").then(({ createServer: createViteServer }) => {
-    createViteServer({
+async function startServer() {
+  const PORT = 3000;
+  
+  // Vite middleware for development
+  if (process.env.NODE_ENV !== "production") {
+    const vite = await import("vite");
+    const viteServer = await vite.createServer({
       server: { middlewareMode: true },
       appType: "spa",
-    }).then((vite) => {
-      app.use(vite.middlewares);
     });
-  });
-} else {
-  const distPath = path.join(process.cwd(), "dist");
-  app.use(express.static(distPath));
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
-}
+    app.use(viteServer.middlewares);
+  } else {
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
+  }
 
-// Start server (outside Vercel)
-if (!process.env.VERCEL) {
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
+}
+
+if (!process.env.VERCEL) {
+  startServer();
 }
 
 export default app;
